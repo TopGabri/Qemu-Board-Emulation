@@ -1,22 +1,21 @@
 #include "qemu/osdep.h"
 #include "qemu/units.h"
 #include "qapi/error.h"
-//#include "avr32exp.h"
 #include "hw/arm/boot.h"
 #include "qom/object.h"
 #include "hw/boards.h"
+#include "hw/arm/nxp_s32k3.h"
 
-struct NXPS32K3BoardMachineState{
+typedef struct {
     MachineState parent_obj;
     NXPS32K3McuState mcu;
-}
-typedef struct NXPS32K3BoardMachineState NXPS32K3BoardMachineState;
+} NXPS32K3BoardMachineState;
 
-struct NXPS32K3BoardMachineClass{
+
+typedef struct {
     MachineClass parent_class;
-}
+} NXPS32K3BoardMachineClass;
 
-typedef struct NXPS32K3BoardMachineClass NXPS32K3BoardMachineClass;
 
 #define TYPE_NXPS32K3_BOARD_BASE_MACHINE MACHINE_TYPE_NAME("nxps32k3-board-base")
 
@@ -71,6 +70,6 @@ static const TypeInfo nxps32k3_board_machine_types[] = {
         .class_init      = nxps32k3_board_class_init
     
     }
-}
+};
 
 DEFINE_TYPES(nxps32k3_board_machine_types)

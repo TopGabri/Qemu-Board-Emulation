@@ -1,22 +1,35 @@
 #include "qemu/osdep.h"
-#include "qemu/module.h"
 #include "qemu/units.h"
+#include "qemu/cutils.h"
 #include "qapi/error.h"
-#include "exec/memory.h"
-#include "exec/address-spaces.h"
-#include "sysemu/sysemu.h"
+#include "qemu/error-report.h"
+#include "hw/arm/boot.h"
+#include "hw/arm/armv7m.h"
+#include "hw/or-irq.h"
+#include "hw/boards.h"
+#include "system/address-spaces.h"
+#include "system/system.h"
 #include "hw/qdev-properties.h"
-#include "hw/sysbus.h"
-#include "qom/object.h"
 #include "hw/misc/unimp.h"
-#include "nxp_s32k3.h"
+#include "hw/char/cmsdk-apb-uart.h"
+#include "hw/timer/cmsdk-apb-timer.h"
+#include "hw/timer/cmsdk-apb-dualtimer.h"
+#include "hw/misc/mps2-scc.h"
+#include "hw/misc/mps2-fpgaio.h"
+#include "hw/ssi/pl022.h"
+#include "hw/i2c/arm_sbcon_i2c.h"
+#include "hw/net/lan9118.h"
+#include "net/net.h"
+#include "hw/watchdog/cmsdk-apb-watchdog.h"
+#include "hw/qdev-clock.h"
+#include "qobject/qlist.h"
+#include "qom/object.h"
+#include "hw/arm/nxp_s32k3.h"
 
 struct NXPS32K3McuClass {
     SysBusDeviceClass parent_class;
     
     const char *cpu_type;
-    
-     size_t flash_size;
 };
 
 typedef struct NXPS32K3McuClass NXPS32K3McuClass;
@@ -32,9 +45,6 @@ static void nxps32k3_realize(DeviceState *dev, Error **errp){
     /*object_initialize_child(OBJECT(mms), "armv7m", &mms->armv7m, TYPE_ARMV7M);
     object_property_set_bool(OBJECT(&s->cpu),"realized",true,&error_abort);*/
     
-    //flash
-    memory_region_init_rom(&s->flash, OBJECT(dev),"flash",mc->flash_size,&error_fatal);
-    memory_region_add_subregion(get_system_memory(),0xd0000000, &s->flash);
 }
 
 static void nxps32k3_class_init(ObjectClass *oc, void *data){
@@ -48,7 +58,6 @@ static void nxps32k3s_class_init(ObjectClass *oc, void *data){
     NXPS32K3McuClass *nxps32k3= NXPS32K3_MCU_CLASS(oc);
     
     /*mc->default_cpu_type = ARM_CPU_TYPE_NAME("cortex-m7");*/
-    nxps32k3->flash_size=1024 * Kib;
 }
 
 static const TypeInfo nxps32k3_mcu_types[]={
