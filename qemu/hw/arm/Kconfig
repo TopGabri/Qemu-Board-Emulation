@@ -692,3 +692,10 @@ config ARMSSE
     select UNIMP
     select SSE_COUNTER
     select SSE_TIMER
+    
+config NXPS32K3_MCU
+	bool
+
+config NXPS32K3_BOARD
+	bool
+	select NXPS32K3_MCU
