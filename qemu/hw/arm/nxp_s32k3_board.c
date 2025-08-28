@@ -21,41 +21,47 @@ typedef struct {
 
 #define TYPE_NXPS32K3_BOARD_MACHINE MACHINE_TYPE_NAME ("nxps32k3-board")
 
+#define SYSCLK_FRQ 120000000ULL
+
 DECLARE_OBJ_CHECKERS(NXPS32K3BoardMachineState, NXPS32K3BoardMachineClass, NXPS32K3_BOARD_MACHINE, TYPE_NXPS32K3_BOARD_MACHINE)
 
 static void nxps32k3_board_init(MachineState *machine){
     NXPS32K3BoardMachineState *m_state= NXPS32K3_BOARD_MACHINE(machine);
+    DeviceState *dev;
+    dev = qdev_new(TYPE_NXPS32K3_MCU);
     
     printf ("setting up board...\n");
     
+    //clock setup
+    Clock *sysclk;
+    sysclk= clock_new(OBJECT(machine), "SYSCLK");
+    clock_set_hz(sysclk, SYSCLK_FRQ);
+    qdev_connect_clock_in(dev, "sysclk", sysclk);
+    
+    //CPU SETUP
     object_initialize_child(OBJECT(machine),"mcu",&m_state->mcu,TYPE_NXPS32K3_MCU);
     sysbus_realize(SYS_BUS_DEVICE(&m_state->mcu),&error_abort);
     
+    //LOAD KERNEL HERE
+    armv7m_load_kernel(NXPS32K3_MCU(dev)->armv7m.cpu, machine->kernel_filename,0, FLASH_SIZE);
+                       
     printf("Board setup complete\n");
     
-    /*printf("Loading firmware\n");
-    
-    if(machine->firmware){
-       if (!avr32_load_firmware(&m_state->mcu.cpu, machine,&m_state->mcu.flash, machine->firmware)) {
-            exit(1); 
-        }   
-    }
-    armv7m_load_kernel(STM32F205_SOC(dev)->armv7m.cpu, machine->kernel_filename,
-                       0, FLASH_SIZE);
-    */
     
 }
 
-static void nxps32k3_board_class_init(ObjectClass *oc, void *data){
+static void nxps32k3_board_class_init(ObjectClass *oc,const void* data){
+
+    static const char * const valid_cpu_types[] = {
+        ARM_CPU_TYPE_NAME("cortex-m7"),
+        NULL
+    };
 
     MachineClass *mc = MACHINE_CLASS(oc);
     
     mc->desc = "NXP S32K3 Board";
-    mc->alias = "nxps32k3-board";
     mc->init = nxps32k3_board_init;
-    //mc -> default_cpus = 1;
-    //mc->min_cpus = mc->default_cpus;
-    //mc->max_cpus = mc->default_cpus;
+    mc->valid_cpu_types = valid_cpu_types;
     mc->no_floppy = 1;
     mc->no_cdrom = 1;
     mc->no_parallel = 1;
