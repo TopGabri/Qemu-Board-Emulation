@@ -6,6 +6,8 @@
 #include "hw/boards.h"
 #include "hw/arm/nxp_s32k3.h"
 
+#define debug 0
+
 typedef struct {
     MachineState parent_obj;
     NXPS32K3McuState mcu;
@@ -42,8 +44,11 @@ static void nxps32k3_board_init(MachineState *machine){
     object_initialize_child(OBJECT(machine),"mcu",&m_state->mcu,TYPE_NXPS32K3_MCU);
     sysbus_realize(SYS_BUS_DEVICE(&m_state->mcu),&error_abort);
     
+    if(debug==1){
+        printf("in debug board\n");
+    }
     //LOAD KERNEL HERE
-    armv7m_load_kernel(NXPS32K3_MCU(dev)->armv7m.cpu, machine->kernel_filename,0, FLASH_SIZE);
+    armv7m_load_kernel(NXPS32K3_MCU(dev)->armv7m.cpu, machine->kernel_filename,0, PFLASH_SIZE);
                        
     printf("Board setup complete\n");
     
