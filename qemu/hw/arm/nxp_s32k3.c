@@ -12,6 +12,7 @@
 #include "qom/object.h"
 #include "hw/arm/nxp_s32k3.h"
 #include "qapi/error.h"
+#include "hw/misc/unimp.h"
   
 
 #define SYSCLK_FRQ 120000000ULL
@@ -59,11 +60,14 @@ static void nxps32k3_realize(DeviceState *dev, Error **errp){
     memory_region_add_subregion(system_memory,DFLASH_2_BA,&s->DFLASH_2);
     
     //peripherals
-    uint32_t current_peripheral_address = PERIPHERAL_BA;
+    /*uint32_t current_peripheral_address = PERIPHERAL_BA;
     while(current_peripheral_address != PERIPHERAL_LAST){
         create_unimplemented_device("general peripheral",  current_peripheral_address, PERIPHERAL_SIZE);
         current_peripheral_address += PERIPHERAL_SIZE;
+        printf ("peripheral creata: %X\n" , current_peripheral_address);
     }
+    printf ("fuori");*/
+    
  
     armv7m = DEVICE(&s->armv7m);
     

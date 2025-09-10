@@ -592,12 +592,12 @@ static void armv7m_reset(void *opaque)
 void armv7m_load_kernel(ARMCPU *cpu, const char *kernel_filename,
                         hwaddr mem_base, int mem_size)
 {
+    printf("dentro load");
     ssize_t image_size;
     uint64_t entry;
     AddressSpace *as;
     int asidx;
     CPUState *cs = CPU(cpu);
-
     if (arm_feature(&cpu->env, ARM_FEATURE_EL3)) {
         asidx = ARMASIdx_S;
     } else {
