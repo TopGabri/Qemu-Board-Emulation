@@ -35,9 +35,11 @@ static void nxps32k3_realize(DeviceState *dev, Error **errp){
     MemoryRegion *system_memory = get_system_memory();
     
     //memory
+    memory_region_init_ram(&s->SRAM_0, OBJECT(dev), "NXPS32K3.SRAM0",SRAM_SIZE,&error_fatal);
+    memory_region_add_subregion(system_memory,SRAM_0_BA,&s->SRAM_0);
+    
     memory_region_init_ram(&s->ITCM, OBJECT(dev), "NXPS32K3.ITCM",ITCM_SIZE,&error_fatal);
     memory_region_init_ram(&s->DTCM, OBJECT(dev), "NXPS32K3.DTCM",DTCM_SIZE,&error_fatal);
-    memory_region_init_ram(&s->SRAM_0, OBJECT(dev), "NXPS32K3.SRAM0",SRAM_SIZE,&error_fatal);
     memory_region_init_ram(&s->SRAM_1, OBJECT(dev), "NXPS32K3.SRAM1",SRAM_SIZE,&error_fatal);
     memory_region_init_ram(&s->SRAM_2, OBJECT(dev), "NXPS32K3.SRAM2",SRAM_SIZE,&error_fatal);
     memory_region_init_rom(&s->PFLASH_0,OBJECT(dev),"NXPS32K3.PFLASH0", PFLASH_SIZE, &error_fatal);
@@ -49,7 +51,6 @@ static void nxps32k3_realize(DeviceState *dev, Error **errp){
     
     memory_region_add_subregion(system_memory,ITCM_BA,&s->ITCM);
     memory_region_add_subregion(system_memory,DTCM_BA,&s->DTCM);
-    memory_region_add_subregion(system_memory,SRAM_0_BA,&s->SRAM_0);
     memory_region_add_subregion(system_memory,SRAM_1_BA,&s->SRAM_1);
     memory_region_add_subregion(system_memory,SRAM_2_BA,&s->SRAM_2);
     memory_region_add_subregion(system_memory,PFLASH_0_BA,&s->PFLASH_0);
