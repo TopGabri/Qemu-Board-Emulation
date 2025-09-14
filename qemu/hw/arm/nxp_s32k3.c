@@ -60,7 +60,7 @@ static void nxps32k3_realize(DeviceState *dev, Error **errp){
     memory_region_add_subregion(system_memory,PFLASH_2_BA,&s->PFLASH_2);
     memory_region_add_subregion(system_memory,DFLASH_2_BA,&s->DFLASH_2);
     
-    memory_region_init_alias(&s->PFLASH_0_alias, OBJECT(dev), "NXPS32K3.PFLASH0-alias", &s->PFLASH_0, 0, 0x400);
+    memory_region_init_alias(&s->PFLASH_0_alias, OBJECT(dev), "NXPS32K3.PFLASH0-alias", &s->PFLASH_0, 0, ITCM_SIZE);
     memory_region_add_subregion(system_memory, 0, &s->PFLASH_0_alias);
     
     //peripherals

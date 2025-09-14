@@ -21,8 +21,8 @@ LD := arm-none-eabi-gcc
 SIZE := arm-none-eabi-size
 
 # Target embedded board and CPU
-MACHINE := mps2-an385 
-CPU := cortex-m3
+MACHINE := nxps32k3-board
+CPU := cortex-m7
 
 # Use -s to connect to gdb port 1234 and -S to wait before executing
 QEMU_FLAGS = # -s -S 
@@ -41,8 +41,6 @@ CFLAGS += -ffreestanding
 
 # Target ARM cortex M3 processor
 CFLAGS += -mcpu=$(CPU)
-# Use the thumb 16 bits instruction set. Required for cortex-M
-CFLAGS += -mthumb
 
 # Print all the most common warnings
 CFLAGS += -Wall
@@ -66,7 +64,7 @@ CFLAGS += -ffunction-sections
 CFLAGS += -fdata-sections
 
 # Specify the linker script
-LDFLAGS = -T ./mps2_m3.ld
+LDFLAGS = -T ./linker.ld
 
 # Don't use the standard start-up files
 LDFLAGS += -nostartfiles
@@ -112,7 +110,7 @@ OBJS_OUTPUT = $(OBJS_NOPATH:%.o=$(OUTPUT_DIR)/%.o)
 
 all: $(ELF)
 
-$(ELF): $(OBJS_OUTPUT) ./mps2_m3.ld Makefile
+$(ELF): $(OBJS_OUTPUT) ./linker.ld Makefile
 	echo "\n\n--- Final linking ---\n"
 	$(LD) $(LDFLAGS) $(OBJS_OUTPUT) -o $(ELF)
 	$(SIZE) $(ELF)
@@ -132,3 +130,8 @@ clean:
 run:
 	qemu-system-arm -machine $(MACHINE) -cpu $(CPU) -kernel \
 	$(ELF) -monitor none -nographic -serial stdio $(QEMU_FLAGS)
+	
+run_debug:
+	qemu-system-arm -machine $(MACHINE) -cpu $(CPU) -kernel \
+	$(ELF) -monitor none -nographic -serial stdio $(QEMU_FLAGS) -s -S
+
