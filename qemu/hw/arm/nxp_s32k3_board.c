@@ -52,7 +52,7 @@ static void nxps32k3_board_init(MachineState *machine){
     printf("ciao super cioa");
     printf ("prima di load kernek\n");
     printf("nome machine: %s",machine->cpu_type);
-    armv7m_load_kernel(NXPS32K3_MCU(dev)->armv7m.cpu, machine->kernel_filename,0x20400000, PFLASH_SIZE);
+    armv7m_load_kernel(NXPS32K3_MCU(dev)->armv7m.cpu, machine->kernel_filename,0x00400000, PFLASH_SIZE);
                        
     printf("Board setup complete\n");
     

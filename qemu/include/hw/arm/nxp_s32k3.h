@@ -45,11 +45,11 @@ struct NXPS32K3McuState{
     MemoryRegion ITCM;
     MemoryRegion DTCM;
     MemoryRegion SRAM_0;
-    MemoryRegion SRAM_0_alias;
     MemoryRegion SRAM_1;
     MemoryRegion SRAM_2;
     //flash memory
     MemoryRegion PFLASH_0;
+    MemoryRegion PFLASH_0_alias;
     MemoryRegion DFLASH_0;
     MemoryRegion PFLASH_1;
     MemoryRegion DFLASH_1;

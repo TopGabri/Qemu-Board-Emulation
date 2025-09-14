@@ -38,9 +38,6 @@ static void nxps32k3_realize(DeviceState *dev, Error **errp){
     memory_region_init_ram(&s->SRAM_0, OBJECT(dev), "NXPS32K3.SRAM0",SRAM_SIZE,&error_fatal);
     memory_region_add_subregion(system_memory,SRAM_0_BA,&s->SRAM_0);
     
-    memory_region_init_alias(&s->SRAM_0_alias, OBJECT(dev), "NXPS32K3.SRAM0-alias", &s->SRAM_0, SRAM_0_BA, SRAM_SIZE);
-    memory_region_add_subregion(system_memory, 0x00000000, &s->SRAM_0_alias);
-    
     memory_region_init_ram(&s->ITCM, OBJECT(dev), "NXPS32K3.ITCM",ITCM_SIZE,&error_fatal);
     memory_region_init_ram(&s->DTCM, OBJECT(dev), "NXPS32K3.DTCM",DTCM_SIZE,&error_fatal);
     memory_region_init_ram(&s->SRAM_1, OBJECT(dev), "NXPS32K3.SRAM1",SRAM_SIZE,&error_fatal);
@@ -62,6 +59,9 @@ static void nxps32k3_realize(DeviceState *dev, Error **errp){
     memory_region_add_subregion(system_memory,DFLASH_1_BA,&s->DFLASH_1);
     memory_region_add_subregion(system_memory,PFLASH_2_BA,&s->PFLASH_2);
     memory_region_add_subregion(system_memory,DFLASH_2_BA,&s->DFLASH_2);
+    
+    memory_region_init_alias(&s->PFLASH_0_alias, OBJECT(dev), "NXPS32K3.PFLASH0-alias", &s->PFLASH_0, 0, 0x400);
+    memory_region_add_subregion(system_memory, 0, &s->PFLASH_0_alias);
     
     //peripherals
     /*uint32_t current_peripheral_address = PERIPHERAL_BA;
