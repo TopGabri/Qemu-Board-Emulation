@@ -6,7 +6,7 @@ DEMO_PROJECT := .
 
 # FreeRTOS kernel
 KERNEL_DIR := $(FREERTOS_ROOT)/Source
-KERNEL_PORT_DIR := $(KERNEL_DIR)/portable/GCC/ARM_CM3
+KERNEL_PORT_DIR := $(KERNEL_DIR)/portable/GCC/ARM_CM4F
 
 # Where to store all the generated files (objects, elf and map)
 OUTPUT_DIR := ./Output
@@ -41,6 +41,9 @@ CFLAGS += -ffreestanding
 
 # Target ARM cortex M3 processor
 CFLAGS += -mcpu=$(CPU)
+CFLAGS += -mfpu=fpv5-sp-d16
+CFLAGS += -mfloat-abi=hard
+
 
 # Print all the most common warnings
 CFLAGS += -Wall
@@ -83,18 +86,19 @@ LDFLAGS += -Xlinker -Map=$(MAP)
 LDFLAGS += -Xlinker --gc-sections
 
 # Link specifically for cortex M3 and thumb instruction set
-LDFLAGS += -mcpu=$(CPU) -mthumb
+LDFLAGS += -mcpu=$(CPU)
+LDFLAGS += -mfpu=fpv5-sp-d16
+LDFLAGS += -mfloat-abi=hard
 
 # Kernel files
 SOURCE_FILES += $(KERNEL_DIR)/tasks.c
 SOURCE_FILES += $(KERNEL_DIR)/list.c
 SOURCE_FILES += $(KERNEL_DIR)/queue.c
 SOURCE_FILES += $(KERNEL_DIR)/portable/MemMang/heap_4.c
-SOURCE_FILES += $(KERNEL_DIR)/portable/GCC/ARM_CM3/port.c
+SOURCE_FILES += $(KERNEL_DIR)/portable/GCC/ARM_CM4F/port.c
 
 # Demo files
 SOURCE_FILES += $(DEMO_PROJECT)/main.c
-SOURCE_FILES += $(DEMO_PROJECT)/uart.c
 
 # Start-up code
 SOURCE_FILES += ./startup.c
@@ -134,4 +138,6 @@ run:
 run_debug:
 	qemu-system-arm -machine $(MACHINE) -cpu $(CPU) -kernel \
 	$(ELF) -monitor none -nographic -serial stdio $(QEMU_FLAGS) -s -S
+debug:
+	gdb-multiarch $(OUTPUT_DIR)/demo.elf -ex "target remote localhost:1234"
 

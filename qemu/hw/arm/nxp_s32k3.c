@@ -80,7 +80,7 @@ static void nxps32k3_realize(DeviceState *dev, Error **errp){
     clock_set_source(s->refclk, s->sysclk);
     //CPU, initialize
     qdev_prop_set_uint32(armv7m, "num-irq", 241);
-    qdev_prop_set_uint8(armv7m, "num-prio-bits", 3);
+    qdev_prop_set_uint8(armv7m, "num-prio-bits", 4);
     qdev_prop_set_string(armv7m, "cpu-type", ARM_CPU_TYPE_NAME("cortex-m7"));
     qdev_prop_set_bit(armv7m, "enable-bitband", false);
     qdev_connect_clock_in(armv7m, "cpuclk", s->sysclk);

@@ -1,5 +1,4 @@
 #include <stdint.h>
-#include "uart.h"
 
 typedef void( *pFunc )( void );
 
@@ -88,8 +87,7 @@ __attribute__( ( used ) ) void prvGetRegistersFromStack( uint32_t *pulFaultStack
     pc = pulFaultStackAddress[ 6 ];
     psr = pulFaultStackAddress[ 7 ];
 
-    UART_printf( "Calling prvGetRegistersFromStack() from fault handler" );
-    //fflush( stdout );
+  //fflush( stdout );
 
     /* When the following line is hit, the variables contain the register values. */
     for( ;; );

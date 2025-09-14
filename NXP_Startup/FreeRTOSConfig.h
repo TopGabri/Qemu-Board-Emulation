@@ -60,6 +60,8 @@
 #define configUSE_MALLOC_FAILED_HOOK             0
 #define configUSE_QUEUE_SETS                     1
 #define configUSE_COUNTING_SEMAPHORES            1
+#define configUSE_TASK_FPU_SUPPORT               1
+
 
 #define configMAX_PRIORITIES                     ( 9UL )
 #define configMAX_CO_ROUTINE_PRIORITIES          ( 2 )
@@ -74,6 +76,8 @@
 
 #define configUSE_TASK_NOTIFICATIONS             1
 #define configTASK_NOTIFICATION_ARRAY_ENTRIES    3
+#define configUSE_TASK_FPU_SUPPORT               1
+
 
 /* Set the following definitions to 1 to include the API function, or zero
  * to exclude the API function. */
@@ -110,7 +114,13 @@
 
 /* !!!! configMAX_SYSCALL_INTERRUPT_PRIORITY must not be set to zero !!!!
  * See http://www.FreeRTOS.org/RTOS-Cortex-M3-M4.html. */
-#define configMAX_SYSCALL_INTERRUPT_PRIORITY             ( 4 )
+#define configPRIO_BITS                             4  // Cortex-M7 ha 4 bit di priorità
+
+#define configLIBRARY_LOWEST_INTERRUPT_PRIORITY     15
+#define configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY 5
+
+#define configMAX_SYSCALL_INTERRUPT_PRIORITY        (configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY << (8 - configPRIO_BITS))
+
 
 /* Use the Cortex-M3 optimised task selection rather than the generic C code
  * version. */
