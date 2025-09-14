@@ -38,6 +38,9 @@ static void nxps32k3_realize(DeviceState *dev, Error **errp){
     memory_region_init_ram(&s->SRAM_0, OBJECT(dev), "NXPS32K3.SRAM0",SRAM_SIZE,&error_fatal);
     memory_region_add_subregion(system_memory,SRAM_0_BA,&s->SRAM_0);
     
+    memory_region_init_alias(&s->SRAM_0_alias, OBJECT(dev), "NXPS32K3.SRAM0-alias", &s->SRAM_0, SRAM_0_BA, SRAM_SIZE);
+    memory_region_add_subregion(system_memory, 0x00000000, &s->SRAM_0_alias);
+    
     memory_region_init_ram(&s->ITCM, OBJECT(dev), "NXPS32K3.ITCM",ITCM_SIZE,&error_fatal);
     memory_region_init_ram(&s->DTCM, OBJECT(dev), "NXPS32K3.DTCM",DTCM_SIZE,&error_fatal);
     memory_region_init_ram(&s->SRAM_1, OBJECT(dev), "NXPS32K3.SRAM1",SRAM_SIZE,&error_fatal);

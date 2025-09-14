@@ -50,7 +50,15 @@ const uint32_t* isr_vector[241] __attribute__((section(".isr_vector"),used)) =
 *----------------------------------------------------------------------------*/
 void Reset_Handler(void)
 {	
+	//__asm volatile ("LDR SP, =_estack\n");
 	main();
+	__asm volatile (
+		"MOV r5, #0\n"
+		"MOV r6, #3\n"
+		"ADD r7, r5, r6\n"
+	);
+	
+	while (1) {}
 }
 
 /*----------------------------------------------------------------------------
