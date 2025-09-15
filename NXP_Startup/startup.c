@@ -10,6 +10,9 @@ extern void vPortSVCHandler( void );
 extern void xPortPendSVHandler( void );
 extern void xPortSysTickHandler( void );
 
+/* Peripheral interrupt handlers. */
+extern void Uart_Handler( void );
+
 /* Exception handlers. */
 static void HardFault_Handler( void ) __attribute__( ( naked ) );
 static void Default_Handler( void ) __attribute__( ( naked ) );
@@ -36,7 +39,7 @@ const uint32_t* isr_vector[241] __attribute__((section(".isr_vector"),used)) =
     0, // reserved   -3
     ( uint32_t * ) &xPortPendSVHandler, // PendSV handler       -2
     ( uint32_t * ) &xPortSysTickHandler,// SysTick_Handler      -1
-    0,
+    0,  //0
     0,
     0,
     0,
@@ -46,10 +49,147 @@ const uint32_t* isr_vector[241] __attribute__((section(".isr_vector"),used)) =
     0,
     0, // Timer 0
     0, // Timer 1
-    0,
+    0,  //10
     0,
     0,
     0, // Ethernet   13
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,  //20
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,  //30
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,  //40
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,  //50
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,  //60
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,  //70
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,  //80
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,  //90
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,  //100
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,  //110
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,  //120
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,  //130
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,  //140
+    ( uint32_t * ) &Uart_Handler,    //141
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,  //150
 };
 /*----------------------------------------------------------------------------
   Reset Handler

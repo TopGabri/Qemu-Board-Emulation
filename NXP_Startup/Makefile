@@ -27,7 +27,7 @@ CPU := cortex-m7
 # Use -s to connect to gdb port 1234 and -S to wait before executing
 QEMU_FLAGS = # -s -S 
 
-INCLUDE_DIRS = -I$(KERNEL_DIR)/include -I$(KERNEL_PORT_DIR)
+INCLUDE_DIRS = -I$(KERNEL_DIR)/include -I$(KERNEL_PORT_DIR) -I$(KERNEL_PORT_DIR)
 INCLUDE_DIRS += -I$(DEMO_PROJECT)
 
 VPATH += $(KERNEL_DIR) $(KERNEL_PORT_DIR) $(KERNEL_DIR)/portable/MemMang
@@ -39,11 +39,10 @@ CFLAGS = $(INCLUDE_DIRS)
 # Don't include standard libraries
 CFLAGS += -ffreestanding
 
-# Target ARM cortex M3 processor
+# Target ARM cortex M7 processor
 CFLAGS += -mcpu=$(CPU)
 CFLAGS += -mfpu=fpv5-sp-d16
 CFLAGS += -mfloat-abi=hard
-
 
 # Print all the most common warnings
 CFLAGS += -Wall
@@ -95,13 +94,16 @@ SOURCE_FILES += $(KERNEL_DIR)/tasks.c
 SOURCE_FILES += $(KERNEL_DIR)/list.c
 SOURCE_FILES += $(KERNEL_DIR)/queue.c
 SOURCE_FILES += $(KERNEL_DIR)/portable/MemMang/heap_4.c
-SOURCE_FILES += $(KERNEL_DIR)/portable/GCC/ARM_CM4F/port.c
+SOURCE_FILES += $(KERNEL_PORT_DIR)/port.c
 
 # Demo files
 SOURCE_FILES += $(DEMO_PROJECT)/main.c
 
 # Start-up code
 SOURCE_FILES += ./startup.c
+
+# Peripheral code
+SOURCE_FILES += ./uart.c
 
 # Create list of object files with the same names of the sources
 OBJS = $(SOURCE_FILES:%.c=%.o)
