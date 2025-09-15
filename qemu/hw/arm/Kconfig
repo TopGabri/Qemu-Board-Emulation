@@ -696,7 +696,8 @@ config ARMSSE
 config NXPS32K3_MCU
 	bool
 	default y
-
+	select UART
+	
 config NXPS32K3_BOARD
 	bool
 	default y

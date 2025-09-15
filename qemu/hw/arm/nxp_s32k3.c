@@ -24,6 +24,9 @@ struct NXPS32K3McuClass {
     const char *cpu_type;
 };
 
+static const uint32_t uart_addr=0x40328000;
+static const uint32_t uart_irq=141;
+
 typedef struct NXPS32K3McuClass NXPS32K3McuClass;
 //DECLARE_CLASS_CHECKERS(NXPS32K3McuClass,NXPS32K3_MCU, TYPE_NXPS32K3_MCU)
 
@@ -32,6 +35,7 @@ static void nxps32k3_realize(DeviceState *dev, Error **errp){
     
     NXPS32K3McuState *s = NXPS32K3_MCU(dev);
     DeviceState *armv7m;
+    SysBusDevice *busdev;
     MemoryRegion *system_memory = get_system_memory();
     
     //memory
@@ -62,8 +66,7 @@ static void nxps32k3_realize(DeviceState *dev, Error **errp){
     
     memory_region_init_alias(&s->PFLASH_0_alias, OBJECT(dev), "NXPS32K3.PFLASH0-alias", &s->PFLASH_0, 0, ITCM_SIZE);
     memory_region_add_subregion(system_memory, 0, &s->PFLASH_0_alias);
-    
-    //peripherals
+
     /*uint32_t current_peripheral_address = PERIPHERAL_BA;
     while(current_peripheral_address != PERIPHERAL_LAST){
         create_unimplemented_device("general peripheral",  current_peripheral_address, PERIPHERAL_SIZE);
@@ -95,6 +98,16 @@ static void nxps32k3_realize(DeviceState *dev, Error **errp){
         printf ("Dentro debug MCU\n");
     }
     printf("qui ci sono\n");
+    
+    //peripherals
+    dev = DEVICE(&(s->uart));
+    qdev_prop_set_chr(dev, "chardev", serial_hd(0));    
+    if (!sysbus_realize(SYS_BUS_DEVICE(&s->uart), errp)) {
+        return;
+    }
+    busdev = SYS_BUS_DEVICE(dev);
+    sysbus_mmio_map(busdev, 0, uart_addr);
+    sysbus_connect_irq(busdev,0,qdev_get_gpio_in(armv7m,uart_irq));
         
 }
 
@@ -110,6 +123,9 @@ static void nxps32k3s_class_init(Object *oc){
     
     //initialize cpu
     object_initialize_child(oc, "armv7m", &nxps32k3->armv7m, TYPE_ARMV7M);
+    
+    //initialize peripherals
+    object_initialize_child(oc, "uart", &nxps32k3->uart, TYPE_UART);
     
     //clock
     nxps32k3->sysclk = qdev_init_clock_in(DEVICE(nxps32k3), "sysclk", NULL, NULL, 0);

@@ -70,6 +70,7 @@ static void nxps32k3_board_class_init(ObjectClass *oc,const void* data){
     mc->desc = "NXP S32K3 Board";
     mc->init = nxps32k3_board_init;
     mc->valid_cpu_types = valid_cpu_types;
+    mc->default_cpus = mc->min_cpus = mc->max_cpus = 1;
     mc->no_floppy = 1;
     mc->no_cdrom = 1;
     mc->no_parallel = 1;
