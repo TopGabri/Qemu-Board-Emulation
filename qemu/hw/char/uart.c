@@ -317,12 +317,12 @@ static void uart_init(Object *obj)
     
 }
 
-static void uart_class_init(ObjectClass *klass, void *data)
+static void uart_class_init(ObjectClass *klass, const void *data)
 {
     DeviceClass *dc = DEVICE_CLASS(klass);
 
     device_class_set_props(dc, uart_properties);
-    device_class_set_legacy_reset(dc,uart_properties);
+    device_class_set_legacy_reset(dc, uart_reset);
     dc->realize = uart_realize;
 }
 
