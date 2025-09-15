@@ -94,6 +94,9 @@ LDFLAGS += -mfloat-abi=hard
 SOURCE_FILES += $(KERNEL_DIR)/tasks.c
 SOURCE_FILES += $(KERNEL_DIR)/list.c
 SOURCE_FILES += $(KERNEL_DIR)/queue.c
+SOURCE_FILES += $(KERNEL_DIR)/timers.c
+SOURCE_FILES += $(KERNEL_DIR)/event_groups.c
+SOURCE_FILES += $(KERNEL_DIR)/stream_buffer.c
 SOURCE_FILES += $(KERNEL_DIR)/portable/MemMang/heap_4.c
 SOURCE_FILES += $(KERNEL_DIR)/portable/GCC/ARM_CM4F/port.c
 
