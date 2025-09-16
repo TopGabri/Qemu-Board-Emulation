@@ -52,7 +52,7 @@ static void nxps32k3_board_init(MachineState *machine){
     printf("ciao super cioa");
     printf ("prima di load kernek\n");
     printf("nome machine: %s",machine->cpu_type);
-    armv7m_load_kernel(NXPS32K3_MCU(dev)->armv7m.cpu, machine->kernel_filename,0x00400000, PFLASH_SIZE);
+    armv7m_load_kernel(NXPS32K3_MCU(dev)->armv7m[0].cpu, machine->kernel_filename,0x00400000, PFLASH_SIZE);
                        
     printf("Board setup complete\n");
     
@@ -70,7 +70,7 @@ static void nxps32k3_board_class_init(ObjectClass *oc,const void* data){
     mc->desc = "NXP S32K3 Board";
     mc->init = nxps32k3_board_init;
     mc->valid_cpu_types = valid_cpu_types;
-    mc->default_cpus = mc->min_cpus = mc->max_cpus = 1;
+    mc->default_cpus = mc->min_cpus = mc->max_cpus = 3;
     mc->no_floppy = 1;
     mc->no_cdrom = 1;
     mc->no_parallel = 1;

@@ -75,29 +75,27 @@ static void nxps32k3_realize(DeviceState *dev, Error **errp){
     }
     printf ("fuori");*/
     
- 
-    armv7m = DEVICE(&s->armv7m);
-    
     //clock
     clock_set_mul_div(s->refclk, 8, 1);
     clock_set_source(s->refclk, s->sysclk);
+    
     //CPU, initialize
-    qdev_prop_set_uint32(armv7m, "num-irq", 241);
-    qdev_prop_set_uint8(armv7m, "num-prio-bits", 4);
-    qdev_prop_set_string(armv7m, "cpu-type", ARM_CPU_TYPE_NAME("cortex-m7"));
-    qdev_prop_set_bit(armv7m, "enable-bitband", false);
-    qdev_connect_clock_in(armv7m, "cpuclk", s->sysclk);
-    qdev_connect_clock_in(armv7m, "refclk", s->refclk);
+    for(int i=0; i<3; i++){
+        armv7m = DEVICE(&s->armv7m[i]);
+        
+        qdev_prop_set_uint32(armv7m, "num-irq", 241);
+        qdev_prop_set_uint8(armv7m, "num-prio-bits", 4);
+        qdev_prop_set_string(armv7m, "cpu-type", ARM_CPU_TYPE_NAME("cortex-m7"));
+        qdev_prop_set_bit(armv7m, "enable-bitband", false);
+        qdev_connect_clock_in(armv7m, "cpuclk", s->sysclk);
+        qdev_connect_clock_in(armv7m, "refclk", s->refclk);
     
-    object_property_set_link(OBJECT(&s->armv7m), "memory",OBJECT(get_system_memory()), &error_abort);
+        object_property_set_link(OBJECT(&s->armv7m[i]), "memory",OBJECT(system_memory), &error_abort);
     
-    if (!sysbus_realize(SYS_BUS_DEVICE(&s->armv7m), errp)) {
-        return;
+        if (!sysbus_realize(SYS_BUS_DEVICE(&s->armv7m[i]), errp)) {
+            return;
+        }
     }
-    if(debug == 1){
-        printf ("Dentro debug MCU\n");
-    }
-    printf("qui ci sono\n");
     
     //peripherals
     dev = DEVICE(&(s->uart));
@@ -107,7 +105,11 @@ static void nxps32k3_realize(DeviceState *dev, Error **errp){
     }
     busdev = SYS_BUS_DEVICE(dev);
     sysbus_mmio_map(busdev, 0, uart_addr);
-    sysbus_connect_irq(busdev,0,qdev_get_gpio_in(armv7m,uart_irq));
+    
+    for(int i=0; i<3 ; i++){
+        armv7m = DEVICE(&s->armv7m[i]);
+        sysbus_connect_irq(busdev,0,qdev_get_gpio_in(armv7m,uart_irq));
+    }
         
 }
 
@@ -122,7 +124,9 @@ static void nxps32k3s_class_init(Object *oc){
     NXPS32K3McuState *nxps32k3= NXPS32K3_MCU(oc);
     
     //initialize cpu
-    object_initialize_child(oc, "armv7m", &nxps32k3->armv7m, TYPE_ARMV7M);
+    object_initialize_child(oc, "armv7m_0", &nxps32k3->armv7m[0], TYPE_ARMV7M);
+    object_initialize_child(oc, "armv7m_1", &nxps32k3->armv7m[1], TYPE_ARMV7M);
+    object_initialize_child(oc, "armv7m_2", &nxps32k3->armv7m[2], TYPE_ARMV7M);
     
     //initialize peripherals
     object_initialize_child(oc, "uart", &nxps32k3->uart, TYPE_UART);

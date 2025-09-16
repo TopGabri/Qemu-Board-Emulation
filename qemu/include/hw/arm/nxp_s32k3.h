@@ -39,7 +39,7 @@ OBJECT_DECLARE_SIMPLE_TYPE(NXPS32K3McuState, NXPS32K3_MCU)
 struct NXPS32K3McuState{
     SysBusDevice parent_obj;
     //cpu
-    ARMv7MState armv7m;
+    ARMv7MState armv7m[3];
     //clock
     Clock *sysclk;
     Clock *refclk;
