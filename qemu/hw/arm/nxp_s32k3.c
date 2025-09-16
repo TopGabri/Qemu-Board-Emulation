@@ -24,8 +24,26 @@ struct NXPS32K3McuClass {
     const char *cpu_type;
 };
 
+//UART address and IRQ
 static const uint32_t uart_addr=0x40328000;
 static const uint32_t uart_irq=141;
+
+//CAN0 address and IRQ
+static const uint32_t can0_addr=0x40304000;
+//which IRQ to use ??
+static const uint32_t can0_0_irq=109; 
+static const uint32_t can0_1_irq=110; 
+static const uint32_t can0_2_irq=111;
+static const uint32_t can0_3_irq=112;
+
+//CAN1 address and IRQ
+//which IRQ to use ??
+static const uint32_t can1_addr=0x40308000;
+static const uint32_t can1_0_irq=113; 
+static const uint32_t can1_1_irq=114; 
+static const uint32_t can1_2_irq=115;
+
+
 
 typedef struct NXPS32K3McuClass NXPS32K3McuClass;
 //DECLARE_CLASS_CHECKERS(NXPS32K3McuClass,NXPS32K3_MCU, TYPE_NXPS32K3_MCU)
@@ -100,6 +118,8 @@ static void nxps32k3_realize(DeviceState *dev, Error **errp){
     printf("qui ci sono\n");
     
     //peripherals
+
+    //UART
     dev = DEVICE(&(s->uart));
     qdev_prop_set_chr(dev, "chardev", serial_hd(0));    
     if (!sysbus_realize(SYS_BUS_DEVICE(&s->uart), errp)) {
@@ -108,6 +128,28 @@ static void nxps32k3_realize(DeviceState *dev, Error **errp){
     busdev = SYS_BUS_DEVICE(dev);
     sysbus_mmio_map(busdev, 0, uart_addr);
     sysbus_connect_irq(busdev,0,qdev_get_gpio_in(armv7m,uart_irq));
+
+    //CAN0
+    dev = DEVICE(&(s->can0));
+    object_property_set_link(OBJECT(&s->can0), "canbus",
+                                OBJECT(s->canbus), &error_fatal);
+    if (!sysbus_realize(SYS_BUS_DEVICE(&s->can0), errp)) {
+        return;
+    }
+    busdev = SYS_BUS_DEVICE(dev);
+    sysbus_mmio_map(busdev, 0, can0_addr);
+    sysbus_connect_irq(busdev, 0, qdev_get_gpio_in(armv7m, can0_0_irq));
+
+    //CAN1
+    dev = DEVICE(&(s->can1));
+    object_property_set_link(OBJECT(&s->can1), "canbus",
+                                OBJECT(s->canbus), &error_fatal);
+    if (!sysbus_realize(SYS_BUS_DEVICE(&s->can1), errp)) {
+        return;
+    }
+    busdev = SYS_BUS_DEVICE(dev);
+    sysbus_mmio_map(busdev, 0, can1_addr);
+    sysbus_connect_irq(busdev, 0, qdev_get_gpio_in(armv7m, can1_0_irq));
         
 }
 
@@ -123,15 +165,20 @@ static void nxps32k3s_class_init(Object *oc){
     
     //initialize cpu
     object_initialize_child(oc, "armv7m", &nxps32k3->armv7m, TYPE_ARMV7M);
-    
+
+    //initialize the CANBUS
+    nxps32k3->canbus = CAN_BUS(object_new(TYPE_CAN_BUS));
+    object_property_add_child(OBJECT(nxps32k3), "canbus", OBJECT(nxps32k3->canbus));
+
     //initialize peripherals
     object_initialize_child(oc, "uart", &nxps32k3->uart, TYPE_UART);
-    
+    object_initialize_child(oc, "can0", &nxps32k3->can0, TYPE_CAN);
+    object_initialize_child(oc, "can1", &nxps32k3->can1, TYPE_CAN);
+
     //clock
     nxps32k3->sysclk = qdev_init_clock_in(DEVICE(nxps32k3), "sysclk", NULL, NULL, 0);
     nxps32k3->refclk = qdev_init_clock_in(DEVICE(nxps32k3), "refclk", NULL, NULL, 0);
     
-  
 }
 
 static const TypeInfo nxps32k3_mcu_info={
