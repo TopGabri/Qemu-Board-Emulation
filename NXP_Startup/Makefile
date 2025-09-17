@@ -112,6 +112,7 @@ SOURCE_FILES += ./startup.c
 
 # Peripheral code
 SOURCE_FILES += ./uart.c
+SOURCE_FILES += ./can.c
 
 # Create list of object files with the same names of the sources
 OBJS = $(SOURCE_FILES:%.c=%.o)

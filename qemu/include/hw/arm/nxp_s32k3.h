@@ -10,6 +10,7 @@
 #include "qobject/qlist.h"
 #include "hw/char/uart.h"
 #include "hw/net/can.h"
+#include "net/can_emu.h"
 
 #define TYPE_NXPS32K3S_MCU "NXPS32K3S"
 
@@ -57,8 +58,11 @@ struct NXPS32K3McuState{
     MemoryRegion DFLASH_1;
     MemoryRegion PFLASH_2;
     MemoryRegion DFLASH_2;
-    //peripheral
+    //peripherals
     UartState uart;
+    CanState can0;
+    CanState can1;
+    CanBusState *canbus;
 };
 
 #endif
