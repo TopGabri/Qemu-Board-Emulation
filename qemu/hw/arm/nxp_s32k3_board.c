@@ -6,8 +6,6 @@
 #include "hw/boards.h"
 #include "hw/arm/nxp_s32k3.h"
 
-#define debug 0
-
 typedef struct {
     MachineState parent_obj;
     NXPS32K3McuState mcu;
@@ -18,17 +16,12 @@ typedef struct {
     MachineClass parent_class;
 } NXPS32K3BoardMachineClass;
 
-
 #define TYPE_NXPS32K3_BOARD_BASE_MACHINE MACHINE_TYPE_NAME("nxps32k3-board-base")
-
 #define TYPE_NXPS32K3_BOARD_MACHINE MACHINE_TYPE_NAME ("nxps32k3-board")
-
-#define SYSCLK_FRQ 120000000ULL
 
 DECLARE_OBJ_CHECKERS(NXPS32K3BoardMachineState, NXPS32K3BoardMachineClass, NXPS32K3_BOARD_MACHINE, TYPE_NXPS32K3_BOARD_MACHINE)
 
 static void nxps32k3_board_init(MachineState *machine){
-    //NXPS32K3BoardMachineState *m_state= NXPS32K3_BOARD_MACHINE(machine);
     DeviceState *dev;
     dev = qdev_new(TYPE_NXPS32K3_MCU);
     object_property_add_child(OBJECT(machine), "mcu", OBJECT(dev));
@@ -42,20 +35,12 @@ static void nxps32k3_board_init(MachineState *machine){
     qdev_connect_clock_in(dev, "sysclk", sysclk);
     
     //CPU SETUP
-    //object_initialize_child(OBJECT(machine),"mcu",&m_state->mcu,TYPE_NXPS32K3_MCU);
     sysbus_realize(SYS_BUS_DEVICE(dev),&error_abort);
     
-    if(debug==1){
-        printf("in debug board\n");
-    }
     //LOAD KERNEL HERE
-    printf("ciao super cioa");
-    printf ("prima di load kernek\n");
-    printf("nome machine: %s",machine->cpu_type);
-    armv7m_load_kernel(NXPS32K3_MCU(dev)->armv7m[0].cpu, machine->kernel_filename,0x00400000, PFLASH_SIZE);
+    armv7m_load_kernel(NXPS32K3_MCU(dev)->armv7m[0].cpu, machine->kernel_filename, 0x00400000, PFLASH_SIZE);
                        
     printf("Board setup complete\n");
-    
 }
 
 static void nxps32k3_board_class_init(ObjectClass *oc,const void* data){

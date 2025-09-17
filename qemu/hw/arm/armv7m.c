@@ -592,7 +592,6 @@ static void armv7m_reset(void *opaque)
 void armv7m_load_kernel(ARMCPU *cpu, const char *kernel_filename,
                         hwaddr mem_base, int mem_size)
 {
-    printf("dentro load");
     ssize_t image_size;
     uint64_t entry;
     AddressSpace *as;
