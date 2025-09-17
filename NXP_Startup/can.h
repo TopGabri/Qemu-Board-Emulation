@@ -70,7 +70,7 @@
 
 
     void CAN_init(void);
-    void CAN_write(int can_number, int can_id, const char *data, int can_dlc, int is_extended_id, int is_remote_frame);
+    void CAN_write(int can_number, int can_id, char *data, int can_dlc, int is_extended_id, int is_remote_frame);
     void CAN_transmit(int can_number);
     int CAN_has_received(int can_number);
     int CAN_read_DLC(int can_number);

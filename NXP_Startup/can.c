@@ -7,7 +7,7 @@
     }
 
 
-    void CAN_write(int can_number, int can_id, const char *data, int can_dlc, int is_extended_id, int is_remote_frame){
+    void CAN_write(int can_number, int can_id, char *data, int can_dlc, int is_extended_id, int is_remote_frame){
 
         switch (can_number) {
             case 0:
