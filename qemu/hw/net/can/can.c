@@ -16,14 +16,14 @@
 
 
 static bool can_can_receive(CanBusClientState *client){
-    printf("Can receive\n");
+    // printf("Can receive\n");
     client = client;
     return true;
 }
 
 static ssize_t can_receive(CanBusClientState *client,
                                const qemu_can_frame *buf, size_t buf_size){
-    printf("Receive\n");
+    // printf("Receive\n");
     
     CanState *s = container_of(client, CanState,
                                          bus_client);
@@ -33,15 +33,15 @@ static ssize_t can_receive(CanBusClientState *client,
 
     qemu_canid_t can_id = frame->can_id;
     uint8_t can_dlc = frame->can_dlc;
-    uint8_t flags = frame->flags;
+    // uint8_t flags = frame->flags;
     uint8_t data[64];
     memcpy(data, frame->data, sizeof(data));
 
     //DEBUG
-    printf("CAN2: Received can_id:%0x can_dlc:%0x flags:%0x\n", can_id, can_dlc, flags);
-    for(int i=0; i<can_dlc && i<8; i++){
-        printf("data[%d] = %0x\n", i, data[i]);
-    }
+    // printf("CAN2: Received can_id:%0x can_dlc:%0x flags:%0x\n", can_id, can_dlc, flags);
+    // for(int i=0; i<can_dlc && i<8; i++){
+    //     printf("data[%d] = %0x\n", i, data[i]);
+    // }
 
 
     //set status bits
@@ -79,7 +79,7 @@ static ssize_t can_receive(CanBusClientState *client,
  
     
     //DEBUG
-    printf("CAN 2: Receive Registers: RFI: 0x%x\tRID: 0x%x\tRDA: 0x%x\tRDB: 0x%x\tSR: 0x%x\n", s->rfi, s->rid, s->rda, s->rdb, s->sr);
+    // printf("CAN 2: Receive Registers: RFI: 0x%x\tRID: 0x%x\tRDA: 0x%x\tRDB: 0x%x\tSR: 0x%x\n", s->rfi, s->rid, s->rda, s->rdb, s->sr);
 
 
     
@@ -91,7 +91,6 @@ static uint64_t can_read(void *opaque, hwaddr addr,
     CanState *s = (CanState*) opaque;
 
     uint32_t retvalue = 0;
-    static int read = 0;    //variable used to set RBS to 0 when both RDA and RDB are read
 
     switch (addr) {
         case TFI:
@@ -108,22 +107,25 @@ static uint64_t can_read(void *opaque, hwaddr addr,
             break;
         case RFI:
             retvalue = s->rfi;
-            printf("Reading Receive Frame Info (RFI) register: 0x%x\tread=%d\n", retvalue,read);
+            // printf("Reading Receive Frame Info (RFI) register: 0x%x\tread=%d\n", retvalue,read);
             break;
         case RID:
             retvalue = s->rid;
-            printf("Reading Receive ID (RID) register: 0x%x\tread=%d\n", retvalue,read);
+            // printf("Reading Receive ID (RID) register: 0x%x\tread=%d\n", retvalue,read);
             break;
         case RDA:
             retvalue = s->rda;
-            printf("Reading Receive Data A (RDA) register: 0x%x\tread=%d\n", retvalue,read);
+            // printf("Reading Receive Data A (RDA) register: 0x%x\tread=%d\n", retvalue,read);
             break;
         case RDB:
             retvalue = s->rdb;
-            printf("Reading Receive Data B (RDB) register: 0x%x\tread=%d\n", retvalue,read);
+            // printf("Reading Receive Data B (RDB) register: 0x%x\tread=%d\n", retvalue,read);
             break;
         case SR: 
             retvalue = s->sr;
+            break;
+        case CMR:
+            retvalue = s->cmr;
             break;
     }
 
@@ -168,11 +170,11 @@ static void can_transmit(CanState *s) {
         }
     }
 
-    printf("CAN 1: Transmitting frame...can_id: 0x%x\tcan_dlc: 0x%x\tdata: ", frame.can_id, frame.can_dlc);
-    for (int i=7; i>=0; i--) {
-        printf("0x%x  ", frame.data[i]);
-    }
-    printf("\n");
+    // printf("CAN 1: Transmitting frame...can_id: 0x%x\tcan_dlc: 0x%x\tdata: ", frame.can_id, frame.can_dlc);
+    // for (int i=7; i>=0; i--) {
+    //     printf("0x%x  ", frame.data[i]);
+    // }
+    // printf("\n");
 
 
     can_bus_client_send(&s->bus_client, &frame, 1);
@@ -188,11 +190,11 @@ static void can_write(void *opaque, hwaddr addr,
 
     switch (addr) {
         case TFI:
-            printf("Writing Transmit Frame Info (TFI) register with value 0x%lx\n", val);
+            // printf("Writing Transmit Frame Info (TFI) register with value 0x%lx\n", val);
             s->tfi = (uint32_t) val;
             break;
         case TID:
-            printf("Writing Transmit Identifier (TID) register with value 0x%lx\n", val);
+            // printf("Writing Transmit Identifier (TID) register with value 0x%lx\n", val);
             if (s->tfi & FF) {
                 s->tid = (uint32_t) (val & IDS);    //standard frame format
             } else {
@@ -200,11 +202,11 @@ static void can_write(void *opaque, hwaddr addr,
             } 
             break;        
         case TDA:
-            printf("Writing Transmit Data A (TDA) register with value 0x%lx\n", val);
+            // printf("Writing Transmit Data A (TDA) register with value 0x%lx\n", val);
             s->tda = (uint32_t) val;
             break;
         case TDB:
-            printf("Writing Transmit Data B (TDB) register with value 0x%lx\n", val);
+            // printf("Writing Transmit Data B (TDB) register with value 0x%lx\n", val);
             s->tdb = (uint32_t) val;
             break;
         case RFI:
@@ -224,17 +226,17 @@ static void can_write(void *opaque, hwaddr addr,
             break;
         case CMR:
             if (val & RRB) {   //Release Receive Buffer
-                printf("Releasing Receive Buffer\n");
+                // printf("Releasing Receive Buffer\n");
                 s->sr &= ~RBS;   //clear Receive Buffer Status
                 s->cmr &= ~RRB;  //clear Release Receive Buffer
             }
             if (val & CDO) {   //Clear Data Overrun
-                printf("Clearing Data Overrun Status\n");
+                // printf("Clearing Data Overrun Status\n");
                 s->sr &= ~DOS;   //clear Data Overrun Status
                 s->cmr &= ~CDO;  //clear Clear Data Overrun
             }
             if (val & TR) {    //Transmission Request
-                printf("Sending Transmission Request\n");
+                // printf("Sending Transmission Request\n");
                 s->cmr &= ~TR;   //clear Transmission Request
                 s->sr &= ~TCS;   //Clear Transmit Complete Status
                 can_transmit(s);
@@ -300,10 +302,9 @@ static const MemoryRegionOps can_ops = {
     .endianness = DEVICE_NATIVE_ENDIAN,
 };
 
-static Property can_properties[] = {
+static const Property can_properties[] = {
     DEFINE_PROP_LINK("canbus", CanState, canbus, TYPE_CAN_BUS,
                      CanBusState *),
-    DEFINE_PROP_END_OF_LIST(),
 };
 
 static void can_init(Object *obj)
@@ -321,13 +322,13 @@ static void can_init(Object *obj)
     sysbus_init_mmio(SYS_BUS_DEVICE(obj), &s->mmio);
 }
 
-static void can_class_init(ObjectClass *klass, void *data)
+static void can_class_init(ObjectClass *klass, const void *data)
 {
     DeviceClass *dc = DEVICE_CLASS(klass);
     //printf("Class init\n");
 
-    dc->reset = can_reset;
     device_class_set_props(dc, can_properties);
+    dc->legacy_reset = can_reset;
     dc->realize = can_realize;
 }
 
