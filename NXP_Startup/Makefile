@@ -27,8 +27,13 @@ CPU := cortex-m7
 # Use -s to connect to gdb port 1234 and -S to wait before executing
 QEMU_FLAGS = # -s -S 
 
-INCLUDE_DIRS = -I$(KERNEL_DIR)/include -I$(KERNEL_PORT_DIR) -I$(KERNEL_PORT_DIR)
+INCLUDE_DIRS = -I$(KERNEL_DIR)/include -I$(KERNEL_PORT_DIR)
 INCLUDE_DIRS += -I$(DEMO_PROJECT)
+
+# CMSIS
+#INCLUDE_DIRS += -I$(DEMO_PROJECT)/../CMSIS/Core/Include
+
+INCLUDE_DIRS += -I$(DEMO_PROJECT)/include
 
 VPATH += $(KERNEL_DIR) $(KERNEL_PORT_DIR) $(KERNEL_DIR)/portable/MemMang
 VPATH += $(DEMO_PROJECT)
@@ -43,6 +48,9 @@ CFLAGS += -ffreestanding
 CFLAGS += -mcpu=$(CPU)
 CFLAGS += -mfpu=fpv5-sp-d16
 CFLAGS += -mfloat-abi=hard
+
+# Already defined in ARMCM7.h
+# CFLAGS += -D__FPU_PRESENT=1
 
 # Print all the most common warnings
 CFLAGS += -Wall

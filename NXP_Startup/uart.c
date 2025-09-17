@@ -2,8 +2,8 @@
 
 void UART_init( void )
 {
-	//NVIC_SetPriority( 70, configMAX_SYSCALL_INTERRUPT_PRIORITY );	
-	//NVIC_EnableIRQ( 70 );
+	NVIC_SetPriority( 141, configMAX_SYSCALL_INTERRUPT_PRIORITY );	
+	NVIC_EnableIRQ( 141 );
 	
     UART_CONTROL = 0x100;       //IE = 1 -> Interrupt raised when any error bit is set
     UART_DIVISOR = 10000000;   //divisor = 10000000

@@ -2,3 +2,4 @@ qemu/build
 NXP_Startup/Output
 NXP_Startup/Output/*
 FreeRTOS
+CMSIS
