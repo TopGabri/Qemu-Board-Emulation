@@ -11,7 +11,7 @@
 
         switch (can_number) {
             case 0:
-                CAN0_TID = is_extended_id ? (uint32_t) (can_id & IDE) : (uint32_t) (can_id & IDS);
+                CAN0_TID = (uint32_t) can_id;
                 CAN0_TFI = (uint32_t) (((is_extended_id & 0x1) << 31) | ((is_remote_frame & 0x1) << 30) | ((can_dlc & 0xF) << DLC_POS));
                 CAN0_TDA = (uint32_t) (data[0] | (data[1] << 8) | (data[2] << 16) | (data[3] << 24));
                 CAN0_TDB = (uint32_t) (data[4] | (data[5] << 8) | (data[6] << 16) | (data[7] << 24));
@@ -103,9 +103,8 @@
     }
 
 
-    char * CAN_read_data(int can_number){
-        char data[8];
-        int dlc;
+    int CAN_read_data(int can_number, char *data){
+        int dlc = 0;
         switch (can_number) {
             case 0:
                 dlc = (CAN0_RFI & DLC_MASK) >> DLC_POS;
@@ -129,10 +128,10 @@
                 break;
             default:
                 //invalid can_number
-                break;
+                return -1;
 
         }
-        return data;
+        return dlc;
     }
 
     int CAN_read_status_bit(int can_number, int status_bit){

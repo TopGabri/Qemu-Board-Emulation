@@ -5,8 +5,8 @@
     // #include "stm32f205xx.h"
     // #include "core_cm3.h"
 
-    #define CAN0_ADDRESS    ( 0x52000000UL )
-    #define CAN1_ADDRESS    ( 0x53000000UL )
+    #define CAN0_ADDRESS    ( 0x40304000UL )
+    #define CAN1_ADDRESS    ( 0x40308000UL )
 
     #define CAN0_TFI    ( *( ( ( volatile uint32_t * ) ( CAN0_ADDRESS + 0UL ) ) ) )
     #define CAN0_TID    ( *( ( ( volatile uint32_t * ) ( CAN0_ADDRESS + 4UL ) ) ) )    
@@ -75,7 +75,7 @@
     int CAN_has_received(int can_number);
     int CAN_read_DLC(int can_number);
     int CAN_read_ID(int can_number);
-    char * CAN_read_data(int can_number);
+    int CAN_read_data(int can_number, char *data);
     int CAN_read_status_bit(int can_number, int status_bit);
     void CAN_release_receive_buffer(int can_number);
     void CAN_clear_data_overrun(int can_number);

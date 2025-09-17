@@ -1,7 +1,9 @@
 #include "FreeRTOS.h"
 #include "task.h"
-#include "stdio.h"
+#include <stdio.h>
+#include <string.h>
 #include "uart.h"
+#include "can.h"
 
 #define mainTASK_PRIORITY    ( tskIDLE_PRIORITY + 2 )
 
@@ -17,7 +19,7 @@ int main(int argc, char **argv){
 	
 	xTaskCreate(useUart, "Task1", 1000, (void*)20, mainTASK_PRIORITY, NULL);
 
-	xTaskCreate(useCan, "Task2", 1000, NULL, mainTASK_PRIORITY, NULL);
+	xTaskCreate(useCan, "Task2", 1000, NULL, mainTASK_PRIORITY-1, NULL);
 		
 	// Give control to the scheduler
 	vTaskStartScheduler();
@@ -54,16 +56,20 @@ void useUart(void *pvParameters){
 }
 
 void useCan(void *pvParameters){
+
+	(void) pvParameters;
+
 	//write to CAN
-	char str[50];
-	char data[8] = {0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88};
+	char str[200];
+	char tmp[9];
+	char data[8] = {0x73, 0x6F, 0x6E, 0x6F, 0x20, 0x67, 0x61, 0x79};
 	int can_id = 0x123;
 	int can_dlc = 8;
 	int is_extended_id = 1;
 	int is_remote_frame = 0;
 
 	//transmit
-	sprintf(str, "CAN: writing and transmitting a frame...can_id: 0x%x\tcan_dlc: 0x%x\tdata: ", can_id, can_dlc);
+	sprintf(str, "CAN0: writing and transmitting a frame...can_id: 0x%x\tcan_dlc: 0x%x\tRTR: %d\tFF: %d\tdata: ", can_id, can_dlc,is_remote_frame, is_extended_id);
 	for(int i=7; i>=0; i--){
 		sprintf(str + strlen(str), "0x%x  ", data[i]);
 	}
@@ -78,8 +84,16 @@ void useCan(void *pvParameters){
 	while(!CAN_has_received(1)){
 	}
 
-	data = CAN_read(1);
+	CAN_read_data(1,tmp);
+	can_id = CAN_read_ID(1);
 	CAN_release_receive_buffer(1);
+	can_dlc = CAN_read_DLC(1);
+	tmp[can_dlc] = '\0';
+	 
+
+
+	sprintf(str, "CAN1: Received frame: can_id: 0x%x\tdata: %s \n", can_id, tmp);
+	UART_printf(str);
 	
 	vTaskDelete(NULL);
 }
