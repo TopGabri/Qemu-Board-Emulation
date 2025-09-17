@@ -1,4 +1,5 @@
 qemu/build
+qemu/scripts
+qemu/tests
 NXP_Startup/Output
-NXP_Startup/Output/*
 FreeRTOS
