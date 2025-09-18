@@ -24,7 +24,7 @@ Inside the project, the following modules are present:
 The project runs on Linux and can be imported from our git repository with the following command:
 
 ```bash
-git clone --recurse-submodules https://baltig.polito.it/eos2024/group4.git
+git clone https://baltig.polito.it/eos2024/group4.git
 ```
 
 To run your code on the emulated board, first and foremost you have to compile Qemu. To do so we run first:
