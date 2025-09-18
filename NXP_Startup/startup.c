@@ -12,6 +12,8 @@ extern void xPortSysTickHandler( void );
 
 /* Peripheral interrupt handlers. */
 extern void Uart_Handler( void );
+extern void CAN0_Handler( void );
+extern void CAN1_Handler( void );
 
 /* Exception handlers. */
 static void HardFault_Handler( void ) __attribute__( ( naked ) );
@@ -148,11 +150,11 @@ const uint32_t* isr_vector[241] __attribute__((section(".isr_vector"),used)) =
     0,
     0,
     0,
-    0,
+    ( uint32_t * ) &CAN0_Handler,    //109,  
     0,  //110
     0,
     0,
-    0,
+    ( uint32_t * ) &CAN1_Handler,    //113,
     0,
     0,
     0,

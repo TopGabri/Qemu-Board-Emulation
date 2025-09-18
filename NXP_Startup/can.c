@@ -2,8 +2,24 @@
 #include <stdint.h>
 
 
-    void CAN_init(void) {
-        
+    void CAN_init(int can_number){ 
+
+        switch (can_number) {
+            case 0:
+                NVIC_SetPriority( FlexCAN0_0_IRQn, configMAX_SYSCALL_INTERRUPT_PRIORITY );	
+                NVIC_EnableIRQ( FlexCAN0_0_IRQn );
+                CAN0_IER |= (RIE | DOIE); //enable interrupts on Receive and Data Overrun
+                break;
+            case 1:
+                NVIC_SetPriority( FlexCAN1_0_IRQn, configMAX_SYSCALL_INTERRUPT_PRIORITY );	
+                NVIC_EnableIRQ( FlexCAN1_0_IRQn );
+                CAN1_IER |= (RIE | DOIE); //enable interrupts on Receive and Data Overrun
+                break;
+            default:
+                //invalid can_number
+                break;
+        }
+
     }
 
 
@@ -180,4 +196,29 @@
 
 
 
-    void CAN_clear_interrupt(void);
+    void CAN_clear_interrupt(int can_number){
+        switch (can_number) {
+            case 0:
+                //clear interrupt by writing to CMR register
+                CAN0_CMR |= (RRB | CDO);
+                break;
+            case 1:
+                //clear interrupt by writing to CMR register
+                CAN1_CMR |= (RRB | CDO);
+                break;
+            default:
+                //invalid can_number
+                break;
+        }
+        
+    }
+
+
+     void CAN0_Handler(void){
+        CAN_clear_interrupt(0);
+
+     }
+
+     void CAN1_Handler(void){
+        CAN_clear_interrupt(1);
+     }

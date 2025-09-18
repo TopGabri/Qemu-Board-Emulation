@@ -15,6 +15,57 @@
 #include "hw/net/can.h"
 
 
+static void check_and_set_interrupt(void *opaque){
+    CanState *s = (CanState *) opaque;
+
+
+    if((s->ier & RIE) & (s->sr & RBS) ||   //if RIE and RBS are set
+       (s->ier & TIE) & (s->sr & TCS) ||   //if TIE and TCS are set
+       (s->ier & DOIE) & (s->sr & DOS))     //if DOIE and DOS are set
+    {
+        //raise interrupt
+        qemu_irq_raise(s->irq);
+        //DEBUG
+        qemu_log_mask(LOG_GUEST_ERROR, "\n---Interrupt raised---        ");
+    }
+}
+
+static void check_and_clear_interrupt(void *opaque){
+    CanState *s = (CanState *) opaque;
+
+    if(!((s->ier & RIE) & (s->sr & RBS) ||   
+       (s->ier & TIE) & (s->sr & TCS) ||   
+       (s->ier & DOIE) & (s->sr & DOS))){     //if any status bit and its corresponding control bit are not set
+        //clear interrupt
+        qemu_irq_lower(s->irq);
+        //DEBUG
+        qemu_log_mask(LOG_GUEST_ERROR, "\n---Interrupt cleared---        ");
+    }
+}
+
+static void set_status_bit(void *opaque, uint32_t status_bit){
+    CanState *s = (CanState *) opaque;
+
+    s->sr |= status_bit;
+
+    //DEBUG
+    qemu_log_mask(LOG_GUEST_ERROR, "\n---Status register: %#x---        ", s->sr);
+
+    check_and_set_interrupt(s);
+}
+
+static void reset_status_bit(void *opaque, uint32_t status_bit){
+    CanState *s = (CanState *) opaque;
+
+    s->sr &= ~status_bit;
+
+    //DEBUG
+    qemu_log_mask(LOG_GUEST_ERROR, "\n---Status register: %#x---        ", s->sr);
+
+    check_and_clear_interrupt(s);
+}
+
+
 static bool can_can_receive(CanBusClientState *client){
     // printf("Can receive\n");
     client = client;
@@ -27,7 +78,6 @@ static ssize_t can_receive(CanBusClientState *client,
     
     CanState *s = container_of(client, CanState,
                                          bus_client);
-    s=s;    //avoid make error
 
     const qemu_can_frame *frame = buf;
 
@@ -47,7 +97,7 @@ static ssize_t can_receive(CanBusClientState *client,
     //set status bits
      if (s->sr & RBS) {
         //RX buffer was occupied -> Data Overrun Error
-        s->sr |= (DOS | ES); 
+        set_status_bit(s, DOS);  //set DOS bit in SR register
     }
 
 
@@ -57,7 +107,6 @@ static ssize_t can_receive(CanBusClientState *client,
     s->rid = (can_id & QEMU_CAN_EFF_MASK);
 
     //RFI (Received Frame Info)
-    
     s->rfi = (can_id & QEMU_CAN_EFF_FLAG)  | (can_id & QEMU_CAN_RTR_FLAG) | ((can_dlc << DLC_POS) & DLC_MASK);
 
 
@@ -74,8 +123,7 @@ static ssize_t can_receive(CanBusClientState *client,
     }
 
     //set status bits
-
-    s->sr |= RBS;  //a message is received by RX buffer and ready to be read
+    set_status_bit(s, RBS);  //a message is received by RX buffer and ready to be read
  
     
     //DEBUG
@@ -106,26 +154,36 @@ static uint64_t can_read(void *opaque, hwaddr addr,
             //write-only
             break;
         case RFI:
+            qemu_log_mask(LOG_GUEST_ERROR, "\n---RFI read---        ");
             retvalue = s->rfi;
             // printf("Reading Receive Frame Info (RFI) register: 0x%x\tread=%d\n", retvalue,read);
             break;
         case RID:
+            qemu_log_mask(LOG_GUEST_ERROR, "\n---RID read---        ");
             retvalue = s->rid;
             // printf("Reading Receive ID (RID) register: 0x%x\tread=%d\n", retvalue,read);
             break;
         case RDA:
+            qemu_log_mask(LOG_GUEST_ERROR, "\n---RDA read---        ");
             retvalue = s->rda;
             // printf("Reading Receive Data A (RDA) register: 0x%x\tread=%d\n", retvalue,read);
             break;
         case RDB:
+            qemu_log_mask(LOG_GUEST_ERROR, "\n---RDB read---        ");
             retvalue = s->rdb;
             // printf("Reading Receive Data B (RDB) register: 0x%x\tread=%d\n", retvalue,read);
             break;
         case SR: 
+            qemu_log_mask(LOG_GUEST_ERROR, "\n---SR read---        ");
             retvalue = s->sr;
             break;
         case CMR:
+            qemu_log_mask(LOG_GUEST_ERROR, "\n---CMR read---        ");
             retvalue = s->cmr;
+            break;
+        case IER:
+            qemu_log_mask(LOG_GUEST_ERROR, "\n---IER read---        ");
+            retvalue = s->ier;
             break;
     }
 
@@ -153,8 +211,6 @@ static void can_transmit(CanState *s) {
         can_dlc = (uint8_t) ((s->tfi & DLC_MASK) >> DLC_POS); //DLC   
 
 
-    //copy data in TDA and TDB to a buffer of same type of frame.data (uint8_t [64])
-
     qemu_can_frame frame = {
         .can_id = can_id,
         .can_dlc = can_dlc,
@@ -180,7 +236,7 @@ static void can_transmit(CanState *s) {
     can_bus_client_send(&s->bus_client, &frame, 1);
 
     //update status bits
-    s->sr |= TCS;
+    set_status_bit(s, TCS);  //set Transmit Complete Status (TCS) bit in SR register
 }
 
 
@@ -192,22 +248,22 @@ static void can_write(void *opaque, hwaddr addr,
         case TFI:
             // printf("Writing Transmit Frame Info (TFI) register with value 0x%lx\n", val);
             s->tfi = (uint32_t) val;
+            qemu_log_mask(LOG_GUEST_ERROR, "\n---TFI register was written: %#x---        ", s->tfi);
             break;
         case TID:
             // printf("Writing Transmit Identifier (TID) register with value 0x%lx\n", val);
-            if (s->tfi & FF) {
-                s->tid = (uint32_t) (val & IDS);    //standard frame format
-            } else {
-                s->tid = (uint32_t) (val & IDE);    //extended frame format
-            } 
+            s->tid = (uint32_t) val;
+            qemu_log_mask(LOG_GUEST_ERROR, "\n---TID register was written: %#x---        ", s->tid);
             break;        
         case TDA:
             // printf("Writing Transmit Data A (TDA) register with value 0x%lx\n", val);
             s->tda = (uint32_t) val;
+            qemu_log_mask(LOG_GUEST_ERROR, "\n---TDA register was written: %#x---        ", s->tda);
             break;
         case TDB:
             // printf("Writing Transmit Data B (TDB) register with value 0x%lx\n", val);
             s->tdb = (uint32_t) val;
+            qemu_log_mask(LOG_GUEST_ERROR, "\n---TDB register was written: %#x---        ", s->tdb);
             break;
         case RFI:
             //read-only
@@ -227,20 +283,28 @@ static void can_write(void *opaque, hwaddr addr,
         case CMR:
             if (val & RRB) {   //Release Receive Buffer
                 // printf("Releasing Receive Buffer\n");
-                s->sr &= ~RBS;   //clear Receive Buffer Status
+                reset_status_bit(s, RBS);   //clear Receive Buffer Status
                 s->cmr &= ~RRB;  //clear Release Receive Buffer
             }
             if (val & CDO) {   //Clear Data Overrun
                 // printf("Clearing Data Overrun Status\n");
-                s->sr &= ~DOS;   //clear Data Overrun Status
+                reset_status_bit(s, DOS);   //clear Data Overrun Status
                 s->cmr &= ~CDO;  //clear Clear Data Overrun
             }
             if (val & TR) {    //Transmission Request
                 // printf("Sending Transmission Request\n");
                 s->cmr &= ~TR;   //clear Transmission Request
-                s->sr &= ~TCS;   //Clear Transmit Complete Status
+                reset_status_bit(s, TCS);   //Clear Transmit Complete Status
                 can_transmit(s);
             }
+            qemu_log_mask(LOG_GUEST_ERROR, "\n---CMR register was written: %#x---        ", s->cmr);
+            break;
+        case IER:
+            s->ier = (uint32_t) (val & 0x0F); //only the first 4 bits are used
+            qemu_log_mask(LOG_GUEST_ERROR, "\n---IER register was written: %#x---        ", s->ier);
+            check_and_set_interrupt(s);
+            check_and_clear_interrupt(s);
+            break;
     }
     
     return;
@@ -259,6 +323,7 @@ static void can_reset(DeviceState *dev){
     s-> rdb = 0x00000000;
     s-> sr = 0x00000000;
     s-> cmr = 0x00000000;
+    s-> ier = 0x00000000; 
 
     qemu_irq_lower(s->irq);
 

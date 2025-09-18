@@ -15,7 +15,7 @@
 
     //CAN controller registers
 
-    #define NREG 10
+    #define NREG 11
 
     #define TFI 0x00    //Transmit Frame Info 
     #define TID 0x04    //Transmit ID
@@ -27,6 +27,7 @@
     #define RDB 0x1C    //Receive Data B
     #define SR  0x20    //Status Register
     #define CMR 0x24    //Command Register   
+    #define IER 0x28    //Interrupt Enable Register 
 
     //TFI/RFI bits
     #define DLC_POS 16                  //Data Length Code Position
@@ -44,15 +45,16 @@
     #define DOS (1 << 1)    //Data Overrun Status
     #define TBS (1 << 2)    //Transmit Buffer Status
     #define TCS (1 << 3)    //Transmit Complete Status
-    #define RS  (1 << 4)    //Receive Status
-    #define TS  (1 << 5)    //Transmit Status
-    #define ES  (1 << 6)    //Error Status
 
     //CMR bits
     #define TR (1 << 0)     //Transmission Request
     #define RRB (1 << 2)    //Release Receive Buffer    
     #define CDO (1 << 3)    //Clear Data Overrun
 
+    //IER bits
+    #define RIE (1 << 0)    //Receive Interrupt Enable
+    #define TIE (1 << 1)    //Transmit Interrupt Enable
+    #define DOIE (1 << 3)   //Data Overrun Interrupt Enable
 
     struct CanState {
         SysBusDevice parent_obj;
@@ -72,6 +74,7 @@
         uint32_t rdb;
         uint32_t sr;
         uint32_t cmr;
+        uint32_t ier;
 
         qemu_irq irq;   //interrupt
 

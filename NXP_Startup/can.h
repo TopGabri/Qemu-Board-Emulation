@@ -2,8 +2,7 @@
     #define CAN_H
 
     #include "FreeRTOS.h"
-    // #include "stm32f205xx.h"
-    // #include "core_cm3.h"
+    #include "ARMCM7.h"
 
     #define CAN0_ADDRESS    ( 0x40304000UL )
     #define CAN1_ADDRESS    ( 0x40308000UL )
@@ -18,6 +17,7 @@
     #define CAN0_RDB    ( *( ( ( volatile uint32_t * ) ( CAN0_ADDRESS + 28UL ) ) ) )
     #define CAN0_SR     ( *( ( ( volatile uint32_t * ) ( CAN0_ADDRESS + 32UL ) ) ) )
     #define CAN0_CMR    ( *( ( ( volatile uint32_t * ) ( CAN0_ADDRESS + 36UL ) ) ) )
+    #define CAN0_IER    ( *( ( ( volatile uint32_t * ) ( CAN0_ADDRESS + 40UL ) ) ) )
 
 
     #define CAN1_TFI    ( *( ( ( volatile uint32_t * ) ( CAN1_ADDRESS + 0UL ) ) ) )
@@ -30,6 +30,7 @@
     #define CAN1_RDB    ( *( ( ( volatile uint32_t * ) ( CAN1_ADDRESS + 28UL ) ) ) )
     #define CAN1_SR     ( *( ( ( volatile uint32_t * ) ( CAN1_ADDRESS + 32UL ) ) ) )
     #define CAN1_CMR    ( *( ( ( volatile uint32_t * ) ( CAN1_ADDRESS + 36UL ) ) ) )
+    #define CAN1_IER    ( *( ( ( volatile uint32_t * ) ( CAN1_ADDRESS + 40UL ) ) ) )
 
 
     #define TFI 0x00    //Transmit Frame Info 
@@ -42,6 +43,7 @@
     #define RDB 0x1C    //Receive Data B
     #define SR  0x20    //Status Register
     #define CMR 0x24    //Command Register   
+    #define IER 0x28    //Interrupt Enable Register
 
     //TFI/RFI bits
     #define DLC_POS 16                  //Data Length Code Position
@@ -68,9 +70,14 @@
     #define RRB (1 << 2)    //Release Receive Buffer    
     #define CDO (1 << 3)    //Clear Data Overrun
 
+    //IER bits
+    #define RIE (1 << 0)    //Receive Interrupt Enable
+    #define TIE (1 << 1)    //Transmit Interrupt Enable
+    #define DOIE (1 << 3)   //Data Overrun Interrupt Enable
 
-    void CAN_init(void);
-    void CAN_write(int can_number, int can_id, char *data, int can_dlc, int is_extended_id, int is_remote_frame);
+
+    void CAN_init(int can_number);
+    void CAN_write(int can_number, int can_id, const char *data, int can_dlc, int is_extended_id, int is_remote_frame);
     void CAN_transmit(int can_number);
     int CAN_has_received(int can_number);
     int CAN_read_DLC(int can_number);
@@ -79,7 +86,8 @@
     int CAN_read_status_bit(int can_number, int status_bit);
     void CAN_release_receive_buffer(int can_number);
     void CAN_clear_data_overrun(int can_number);
-    void CAN_clear_interrupt(void);
-    void CAN_Handler(void);
+    void CAN_clear_interrupt(int can_number);
+    void CAN0_Handler(void);
+    void CAN1_Handler(void);
 
 #endif

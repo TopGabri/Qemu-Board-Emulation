@@ -30,18 +30,11 @@ static const uint32_t uart_irq=141;
 
 //CAN0 address and IRQ
 static const uint32_t can0_addr=0x40304000;
-//which IRQ to use ??
-static const uint32_t can0_0_irq=109; 
-static const uint32_t can0_1_irq=110; 
-static const uint32_t can0_2_irq=111;
-static const uint32_t can0_3_irq=112;
+static const uint32_t can0_irq=109; 
 
 //CAN1 address and IRQ
-//which IRQ to use ??
 static const uint32_t can1_addr=0x40308000;
-static const uint32_t can1_0_irq=113; 
-static const uint32_t can1_1_irq=114; 
-static const uint32_t can1_2_irq=115;
+static const uint32_t can1_irq=113; 
 
 
 
@@ -138,7 +131,7 @@ static void nxps32k3_realize(DeviceState *dev, Error **errp){
     }
     busdev = SYS_BUS_DEVICE(dev);
     sysbus_mmio_map(busdev, 0, can0_addr);
-    sysbus_connect_irq(busdev, 0, qdev_get_gpio_in(armv7m, can0_0_irq));
+    sysbus_connect_irq(busdev, 0, qdev_get_gpio_in(armv7m, can0_irq));
 
     //CAN1
     dev = DEVICE(&(s->can1));
@@ -149,7 +142,7 @@ static void nxps32k3_realize(DeviceState *dev, Error **errp){
     }
     busdev = SYS_BUS_DEVICE(dev);
     sysbus_mmio_map(busdev, 0, can1_addr);
-    sysbus_connect_irq(busdev, 0, qdev_get_gpio_in(armv7m, can1_0_irq));
+    sysbus_connect_irq(busdev, 0, qdev_get_gpio_in(armv7m, can1_irq));
         
 }
 
