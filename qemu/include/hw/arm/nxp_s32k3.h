@@ -32,28 +32,22 @@
 #define DFLASH_2_BA 0x10016000
 #define DFLASH_SIZE 0xA000
 
+
+//Peripherals 
+#define UART0_BA 0x40328000
+#define UART0_IRQn 141
+#define CAN0_BA 0x40304000
+#define CAN0_IRQn 109
+#define CAN1_BA 0x40308000
+#define CAN1_IRQn 113
+
+
 typedef struct NXPS32K3McuState NXPS32K3McuState;
 #define TYPE_NXPS32K3_MCU "nxps32k3-mcu"
 OBJECT_DECLARE_SIMPLE_TYPE(NXPS32K3McuState, NXPS32K3_MCU)
 
 #define SYSCLK_FRQ 120000000ULL
 
-static const uint32_t uart_addr=0x40328000;
-static const uint32_t uart_irq=141;
-//CAN0 address and IRQ
-static const uint32_t can0_addr=0x40304000;
-//which IRQ to use ??
-static const uint32_t can0_0_irq=109; 
-static const uint32_t can0_1_irq=110; 
-static const uint32_t can0_2_irq=111;
-static const uint32_t can0_3_irq=112;
-
-//CAN1 address and IRQ
-//which IRQ to use ??
-static const uint32_t can1_addr=0x40308000;
-static const uint32_t can1_0_irq=113; 
-static const uint32_t can1_1_irq=114; 
-static const uint32_t can1_2_irq=115;
 
 
 struct NXPS32K3McuState{
@@ -81,7 +75,7 @@ struct NXPS32K3McuState{
     MemoryRegion PFLASH_0_alias;
     
     //peripheral
-    UartState uart;
+    UartState uart0;
     CanState can0;
     CanState can1;
     CanBusState *canbus;
