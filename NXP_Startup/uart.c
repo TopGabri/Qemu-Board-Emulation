@@ -5,8 +5,8 @@ void UART_init( void )
 	NVIC_SetPriority( LPUART0_IRQn, configMAX_SYSCALL_INTERRUPT_PRIORITY );	
 	NVIC_EnableIRQ( LPUART0_IRQn );
 	
-    UART_CONTROL = 0x100;       //IE = 1 -> Interrupt raised when any error bit is set
-    UART_DIVISOR = 10000000;   //divisor = 10000000
+    UART_CONTROL = IROE;   //IROE = 1 -> Interrupt raised when ROE = 1
+    UART_DIVISOR = 1000;   //divisor = 1000
 }
 
 void UART_printf(const char *s) {
@@ -23,5 +23,5 @@ char UART_getchar(void){
 }
 
 void UART_clear_interrupt(void){
-	UART_STATUS &= ~(E | TOE | ROE | FE | PE);	//error bits = 0 -> clear interrupt
+	UART_STATUS &= ~(ROE);
 }

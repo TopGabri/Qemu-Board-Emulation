@@ -43,9 +43,7 @@
     #define IRRDY (1 << 7)
     #define IE (1 << 8)
 
-    #define CLK_FREQ 1000000000 //1 GHz
-    //TODO: take clk freq from the device instantiating the UART
-
+    #define CLK_FREQ 115200
 
     struct UartState {
         SysBusDevice parent_obj;

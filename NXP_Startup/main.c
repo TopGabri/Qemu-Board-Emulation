@@ -65,7 +65,7 @@ void read_from_UART(void *pvParameters){
 	for(;;){
 		xSemaphoreTake(xSem1, portMAX_DELAY);
 
-		UART_printf("read_from_UART\n");
+		UART_printf("(read_from_UART)\n");
 
 		UART_printf("Reading 8 chars...\n");
 
@@ -74,7 +74,7 @@ void read_from_UART(void *pvParameters){
 			characters[i] = UART_getchar();
 		}
 
-		UART_printf("Bye\n");
+		UART_printf("(Bye)\n");
 
 		xSemaphoreGive(xSem2);
 	}
@@ -89,7 +89,7 @@ void write_to_CAN_and_transmit(void *pvParameters){
 	for(;;){
 		xSemaphoreTake(xSem2, portMAX_DELAY);
 
-		UART_printf("write_to_CAN_and_transmit\n");
+		UART_printf("(write_to_CAN_and_transmit)\n");
 
 		//write to CAN
 		int can_id = 0x123;
@@ -102,7 +102,7 @@ void write_to_CAN_and_transmit(void *pvParameters){
 
 		CAN_transmit(0);	//Use CAN1 to transmit
 
-		UART_printf("Bye\n");
+		UART_printf("(Bye)\n");
 		
 		xSemaphoreGive(xSem3);
 	}
@@ -116,14 +116,14 @@ void read_from_CAN(void *pvParameters){
 	for(;;){	
 		xSemaphoreTake(xSem3, portMAX_DELAY);
 
-		UART_printf("read_from_CAN\n");
+		UART_printf("(read_from_CAN)\n");
 
 		if(CAN_has_received(1)){	//Use CAN2 to receive
 			CAN_read_data(1, characters2);
 			CAN_release_receive_buffer(1);
 		}
 
-		UART_printf("Bye\n");
+		UART_printf("(Bye)\n");
 
 		xSemaphoreGive(xSem4);
 	}
@@ -139,14 +139,14 @@ void write_to_UART(void *pvParameters){
 	for(;;){
 		xSemaphoreTake(xSem4, portMAX_DELAY);
 
-		UART_printf("write_to_UART\n");
+		UART_printf("(write_to_UART)\n");
 
 		char str[50];
 
 		sprintf(str, "%s\n", characters2);
 		UART_printf(str);
 
-		UART_printf("Bye\n");
+		UART_printf("(Bye)\n");
 
 		xSemaphoreGive(xSem1);
 	}
@@ -155,7 +155,7 @@ void write_to_UART(void *pvParameters){
 // Interrupt handlers
 void Uart_Handler( void ){
 	UART_clear_interrupt();
-	UART_printf("Interrupt received\n");
+	UART_printf("(UART interrupt received)\n");
 }
 
 
