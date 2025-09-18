@@ -196,33 +196,7 @@ nxps32k3->canbus = CAN_BUS(object_new(TYPE_CAN_BUS));
 object_property_add_child(OBJECT(nxps32k3),"canbus", OBJECT(nxps32k3->canbus));
 
 //initialize the CAN peripheral(s)
-object_initialize_child(oc, "can0", &nxps32k3->can0, TYPE_CAN);- [CAN peripheral](#can-peripheral)
-  - [Introduction](#introduction)
-  - [Qemu custom device](#qemu-custom-device)
-    - [Create the `.c` and `.h` files](#create-the-c-and-h-files)
-    - [Bus and Peripheral instantiation](#bus-and-peripheral-instantiation)
-  - [LPC17xx CAN Peripheral: description](#lpc17xx-can-peripheral-description)
-    - [TX buffer](#tx-buffer)
-      - [Transmit Frame Info (TFI) register](#transmit-frame-info-tfi-register)
-      - [Transmit Identifier (TID) register](#transmit-identifier-tid-register)
-        - [if TFI\[FF\] = 0 (standard frame format)](#if-tfiff--0-standard-frame-format)
-        - [if TFI\[FF\] = 1 (extended frame format)](#if-tfiff--1-extended-frame-format)
-      - [Transmit Data A (TDA) register](#transmit-data-a-tda-register)
-      - [Transmit Data B (TDB) register](#transmit-data-b-tdb-register)
-    - [RX buffer](#rx-buffer)
-      - [Receive Frame Info (RFI) register](#receive-frame-info-rfi-register)
-      - [Receive Identifier (RID) register](#receive-identifier-rid-register)
-      - [Receive Data A (RDA) register](#receive-data-a-rda-register)
-      - [Receive Data B (RDB) register](#receive-data-b-rdb-register)
-    - [Status Register (SR)](#status-register-sr)
-    - [Command Register (CMR)](#command-register-cmr)
-    - [Interrupt Enable Register (IER)](#interrupt-enable-register-ier)
-  - [LPC17xx CAN peripheral: Operation \& implementation](#lpc17xx-can-peripheral-operation--implementation)
-    - [Writing to TX buffer and starting a transmission](#writing-to-tx-buffer-and-starting-a-transmission)
-    - [Transmitting](#transmitting)
-    - [Receiving](#receiving)
-    - [Reading from RX buffer](#reading-from-rx-buffer)
-
+object_initialize_child(oc, "can0", &nxps32k3->can0, TYPE_CAN);
 ```
 
 Inside SoC `realize`:
