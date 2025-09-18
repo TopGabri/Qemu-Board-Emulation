@@ -46,11 +46,11 @@ CAN_transmit(0);	//Use CAN0 to transmit
 ### Data received by CAN1 is sent to UART0
 ![can1_to_uart](docs_material/can1_to_uart.gif)
 ```c
-if(CAN_has_received(1)){	//Use CAN1 to receive
-    CAN_read_data(1, characters2);    /*fill characters2 
-                                        with CAN data*/
-    CAN_release_receive_buffer(1);
-}
+while(!CAN_has_received(1)){}
+		
+CAN_read_data(1, characters2);
+CAN_release_receive_buffer(1);
+
 ```
 
 ### UART0 transmit characters to stdout

@@ -100,7 +100,7 @@ void write_to_CAN_and_transmit(void *pvParameters){
 		//can_data = characters
 		CAN_write(0, can_id, characters, can_dlc, is_extended_id, is_remote_frame);
 
-		CAN_transmit(0);	//Use CAN1 to transmit
+		CAN_transmit(0);	//Use CAN0 to transmit
 
 		UART_printf("(Bye)\n");
 		
@@ -120,7 +120,7 @@ void read_from_CAN(void *pvParameters){
 
 		while(!CAN_has_received(1)){}
 		
-		CAN_read_data(1, characters2);
+		CAN_read_data(1, characters2);	//read data from CAN1
 		CAN_release_receive_buffer(1);
 
 		UART_printf("(Bye)\n");
@@ -161,12 +161,12 @@ void Uart_Handler( void ){
 
 void CAN0_Handler(void){
 	CAN_clear_interrupt(0);
-	UART_printf("CAN: Interrupt received\n");
+	UART_printf("CAN0: Interrupt received\n");
 }
 
 void CAN1_Handler(void){
 	CAN_clear_interrupt(1);
-	UART_printf("CAN: Interrupt received\n");
+	UART_printf("CAN1: Interrupt received\n");
 }
 
 
