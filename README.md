@@ -27,15 +27,26 @@ The project runs on Linux and can be imported from our git repository with the f
 git clone --recurse-submodules https://baltig.polito.it/eos2024/group4.git
 ```
 
-The option `--recurse-submodules` is necessary to clone also the FreeRTOS submodule.
+The option `--recurse-submodules` is necessary to dowload FreeRTOS.
 
-To run your code on the emulated board, first and foremost you have to compile Qemu. To do so we run first:
+To run your code on the emulated board, first and foremost you have to compile Qemu. To do so, you have to move to the Qemu directory:
 
 ```bash
-cd qemu/build
+cd qemu
+```
+
+and, if not already done, create the `build` directory:
+
+```bash
+mkdir build
+```
+
+Then run the command:
+
+```bash
 ../configure --target-list=arm-softmmu
 ```
-to be in the build directory of Qemu (in case it's not present you have to first create it with the command `mkdir build`) and configure its Makefile to compile only the useful files.
+to configure its `Makefile` to compile only the useful files.
 Then run:
 
 ```bash
@@ -45,7 +56,7 @@ sudo make install
 
 where the second command is necessary only if you want to access Qemu from outside its directory as we are about to do.
 
-Then open another terminal in the directory where the code to run is present (for our demo it's the `Demo` folder), and simply run:
+Then open another terminal in the directory storing the code to execute (for our demo it's the `Demo` folder), and simply run:
 
 ```bash
 make all
