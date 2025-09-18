@@ -118,10 +118,10 @@ void read_from_CAN(void *pvParameters){
 
 		UART_printf("(read_from_CAN)\n");
 
-		if(CAN_has_received(1)){	//Use CAN2 to receive
-			CAN_read_data(1, characters2);
-			CAN_release_receive_buffer(1);
-		}
+		while(!CAN_has_received(1)){}
+		
+		CAN_read_data(1, characters2);
+		CAN_release_receive_buffer(1);
 
 		UART_printf("(Bye)\n");
 
@@ -155,7 +155,18 @@ void write_to_UART(void *pvParameters){
 // Interrupt handlers
 void Uart_Handler( void ){
 	UART_clear_interrupt();
-	UART_printf("(UART interrupt received)\n");
+	UART_printf("UART: Interrupt received\n");
+}
+
+
+void CAN0_Handler(void){
+	CAN_clear_interrupt(0);
+	UART_printf("CAN: Interrupt received\n");
+}
+
+void CAN1_Handler(void){
+	CAN_clear_interrupt(1);
+	UART_printf("CAN: Interrupt received\n");
 }
 
 
