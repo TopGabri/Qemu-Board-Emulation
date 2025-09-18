@@ -151,7 +151,7 @@ Data coming from outside is sampled bit by bit by rx_shift_register. When a full
 Data being transmitted outside is first moved from TXDATA to tx_shift_register (in parallel), which is in charge of transmitting the character one bit at a time to the serial line. 
 The transmitter and receiver logic deal with parity check, start and stop bits insertion and removal.
 
-![altera_nios_2_uart](altera_nios_ii_uart.png)
+![altera_nios_2_uart](docs_material/altera_nios_ii_uart.png)
 
 The STATUS register contains status bits which can be set or reset when certain conditions hold.
 The status bits are:
@@ -239,7 +239,7 @@ The device includes 2 virtual timers, some internal variables, 5 registers acces
 
 This is the structure of the peripheral:
 
-![qemu_uart](qemu_uart.png)
+![qemu_uart](docs_material/qemu_uart.png)
 
             
 Now, let's go through every UART operation one by one.

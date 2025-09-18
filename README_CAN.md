@@ -241,7 +241,7 @@ For the implementation of the peripheral, we chose the *NXP LPC17xx* CAN control
 The addresses in parentheses are offsets relative to the peripheral base address.
 
 
-![lpc17xx_can](lpc17xx_can.png)
+![lpc17xx_can](docs_material/lpc17xx_can.png)
 
 
 We need to describe the registers in detail, as knowing their topology is essential to understand how transmission and reception work:

@@ -6,7 +6,7 @@ CAN0 and CAN1 peripherals are connected to the CAN bus. To test their correct be
 Finally, data is collected from CAN1 and printed back to stdout.
 
 ### UART0 receives chars from stdin
-![uart_rx](uart_rx.gif)
+![uart_rx](docs_material/uart_rx.gif)
 ```c
 UART_printf("Reading 8 chars...\n");
 
@@ -17,7 +17,7 @@ for(int i=0; i<8; i++){
 ```
 
 ### Data received by UART is sent to CAN0
-![uart_to_can0](uart_to_can0.gif)
+![uart_to_can0](docs_material/uart_to_can0.gif)
 ```c
 //read from UART
 for(int i=0; i<8; i++){
@@ -38,13 +38,13 @@ CAN_write(0, can_id, characters, can_dlc,
 ```
 
 ### CAN0 transmits to CAN1 using the CANBUS
-![can0_to_can1](can0_to_can1.gif)
+![can0_to_can1](docs_material/can0_to_can1.gif)
 ```
 CAN_transmit(0);	//Use CAN0 to transmit
 ```
 
 ### Data received by CAN1 is sent to UART0
-![can1_to_uart](can1_to_uart.gif)
+![can1_to_uart](docs_material/can1_to_uart.gif)
 ```c
 if(CAN_has_received(1)){	//Use CAN1 to receive
     CAN_read_data(1, characters2);    /*fill characters2 
@@ -54,7 +54,7 @@ if(CAN_has_received(1)){	//Use CAN1 to receive
 ```
 
 ### UART0 transmit characters to stdout
-![uart_tx](uart_tx.gif)
+![uart_tx](docs_material/uart_tx.gif)
 ```c
 sprintf(str, "%s\n", characters2);
 UART_printf(str);
@@ -113,4 +113,4 @@ void CAN1_Handler(void){
 ```
 
 ## Example execution
-![kernelExecution](https://hackmd.io/_uploads/rk1ZNsKoex.gif)
+![kernelExecution](docs_material/kernelExecution.gif)
