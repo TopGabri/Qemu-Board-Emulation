@@ -2,24 +2,20 @@
 
 - [Introduction](#introduction)
 - [Qemu custom device](#qemu-custom-device)
-  - [Create the .c and .h files](#create-the-c-and-h-files)
 - [Altera Nios II UART Peripheral](#altera-nios-ii-uart-peripheral)
 - [Chardev in Qemu](#chardev-in-qemu)
   - [Reception using a CharBackend](#reception-using-a-charbackend)
   - [Transmission using a CharBackend](#transmission-using-a-charbackend)
 - [Emulation of UART behaviour in Qemu](#emulation-of-uart-behaviour-in-qemu)
   - [Reading from serial port](#reading-from-serial-port)
-    - [Backend → rx_shift_register](#backend--rx_shift_register)
-    - [rx_shift_register → RX_DATA](#rx_shift_register--rx_data)
-  - [Writing in TX_DATA](#writing-in-tx_data)
-    - [TX_DATA→ tx_shift_register](#tx_data--tx_shift_register)
-    - [tx_shift_register → backend](#tx_shift_register--backend)
+  - [Writing in TX\_DATA](#writing-in-tx_data)
   - [Writing in DIVISOR](#writing-in-divisor)
   - [Status bits](#status-bits)
   - [Control bits](#control-bits)
 - [Kernel](#kernel)
   - [Read](#read)
   - [Write](#write)
+
 
 
 ## Introduction
