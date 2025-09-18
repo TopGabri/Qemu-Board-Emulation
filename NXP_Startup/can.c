@@ -216,7 +216,6 @@
 
      void CAN0_Handler(void){
         CAN_clear_interrupt(0);
-
      }
 
      void CAN1_Handler(void){

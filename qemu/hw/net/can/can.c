@@ -12,6 +12,20 @@
 #include "qemu/event_notifier.h"
 #include "qom/object_interfaces.h"
 #include "trace.h"
+#include "qemu/osdep.h"
+#include "hw/sysbus.h"
+#include "hw/register.h"
+#include "hw/irq.h"
+#include "qapi/error.h"
+#include "qemu/bitops.h"
+#include "qemu/log.h"
+#include "qemu/cutils.h"
+#include "hw/qdev-properties.h"
+#include "net/can_emu.h"
+#include "net/can_host.h"
+#include "qemu/event_notifier.h"
+#include "qom/object_interfaces.h"
+#include "trace.h"
 #include "hw/net/can.h"
 
 
@@ -20,13 +34,18 @@ static void check_and_set_interrupt(void *opaque){
 
 
     if((s->ier & RIE) & (s->sr & RBS) ||   //if RIE and RBS are set
-       (s->ier & TIE) & (s->sr & TCS) ||   //if TIE and TCS are set
        (s->ier & DOIE) & (s->sr & DOS))     //if DOIE and DOS are set
     {
         //raise interrupt
         qemu_irq_raise(s->irq);
         //DEBUG
-        qemu_log_mask(LOG_GUEST_ERROR, "\n---Interrupt raised---        ");
+        qemu_log_mask(LOG_GUEST_ERROR, "\n---Level interrupt raised---        ");
+    } else if ((s->ier & TIE) & (s->sr & TCS))   //if TIE and TCS are set    
+    {
+        //pulse interrupt
+        qemu_irq_pulse(s->irq);
+        //DEBUG
+        qemu_log_mask(LOG_GUEST_ERROR, "\n---Pulse interrupt raised---        ");
     }
 }
 

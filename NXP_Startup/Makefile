@@ -29,6 +29,7 @@ QEMU_FLAGS = # -s -S
 
 INCLUDE_DIRS = -I$(KERNEL_DIR)/include -I$(KERNEL_PORT_DIR)
 INCLUDE_DIRS += -I$(DEMO_PROJECT)
+INCLUDE_DIRS += -I$(DEMO_PROJECT)/include
 
 # CMSIS
 #INCLUDE_DIRS += -I$(DEMO_PROJECT)/../CMSIS/Core/Include
@@ -151,4 +152,8 @@ run_debug:
 	$(ELF) -monitor none -nographic -serial stdio $(QEMU_FLAGS) -s -S
 debug:
 	gdb-multiarch $(OUTPUT_DIR)/demo.elf -ex "target remote localhost:1234"
+run_monitor:
+	qemu-system-arm -machine nxps32k3-board -kernel ./Output/demo.elf -monitor telnet:127.0.0.1:1234,server,nowait -serial stdio -nographic
+open_monitor:
+	telnet 127.0.0.1 1234
 
