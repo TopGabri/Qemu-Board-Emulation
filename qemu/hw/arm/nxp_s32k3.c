@@ -26,7 +26,7 @@ typedef struct NXPS32K3McuClass NXPS32K3McuClass;
 
 static void nxps32k3_realize(DeviceState *dev, Error **errp)
 {    
-    // printf("Realizing NXP S32K3 Micro Controller \n");
+    printf("Realizing NXP S32K3 Micro Controller \n");
     
     NXPS32K3McuState *s = NXPS32K3_MCU(dev);
     DeviceState *armv7m;
@@ -66,10 +66,10 @@ static void nxps32k3_realize(DeviceState *dev, Error **errp)
         
         if (i != 0) qdev_prop_set_bit(armv7m, "start-powered-off", true);
     	
-    	//Link cpu to memory
-    	object_property_set_link(OBJECT(&s->armv7m[i]), "memory", OBJECT(&s->cpu_sysmem[i]), &error_abort);
-    	
-    	//realize the sysbus
+        	//Link cpu to memory
+        	object_property_set_link(OBJECT(&s->armv7m[i]), "memory", OBJECT(&s->cpu_sysmem[i]), &error_abort);
+        	
+        	//realize the sysbus
         if (!sysbus_realize(SYS_BUS_DEVICE(&s->armv7m[i]), errp)) {
             return;
         }
@@ -93,7 +93,7 @@ static void nxps32k3_realize(DeviceState *dev, Error **errp)
 
 		if (i == 0) {
 			memory_region_init_alias(&s->PFLASH_0_alias, NULL, "NXPS32K3.PFLASH0-alias", &s->PFLASH[i], 0, ITCM_SIZE);
-    		memory_region_add_subregion(&s->cpu_sysmem[i], 0, &s->PFLASH_0_alias);
+    	        	memory_region_add_subregion(&s->cpu_sysmem[i], 0, &s->PFLASH_0_alias);
 		}
    	}
    	

@@ -24,7 +24,7 @@ Inside the project are present:
 The project run on Linux and can be imported from our git repository with the following command:
 
 ```bash
-git clone --recurse-submodules https://baltig.polito.it/eos2024/group4.git
+git clone https://baltig.polito.it/eos2024/group4.git
 ```
 
 To run your code on the emulated board, first and foremost you have to compile Qemu. To do so we run first:
@@ -42,6 +42,12 @@ sudo make install
 ```
 
 where the second command is necessary only if you want to access Qemu from outside its directory as we are about to do.
+
+Now, you have to import FreeRTOS if you want to use it, and to do so run this command inside the main directory:
+
+```bash
+git clone --recurse-submodules https://baltig.polito.it/teaching-material/labs-caos-and-os/lab3-freertos.git
+```
 
 Then open another terminal on directory where its present the code to run (for our demo it's the folder demo), and simply run:
 
