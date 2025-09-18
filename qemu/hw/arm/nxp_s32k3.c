@@ -107,10 +107,9 @@ static void nxps32k3_realize(DeviceState *dev, Error **errp)
     busdev = SYS_BUS_DEVICE(dev);
     sysbus_mmio_map(busdev, 0, UART0_BA);
     
-    for(int i=0; i<3 ; i++){
-        armv7m = DEVICE(&s->armv7m[i]);
-        sysbus_connect_irq(busdev,0,qdev_get_gpio_in(armv7m,UART0_IRQn));
-    }
+    armv7m = DEVICE(&s->armv7m[0]);
+    sysbus_connect_irq(busdev,0,qdev_get_gpio_in(armv7m,UART0_IRQn));
+
     //CAN0
     dev = DEVICE(&(s->can0));
     object_property_set_link(OBJECT(&s->can0), "canbus",OBJECT(s->canbus), &error_fatal);
@@ -119,10 +118,10 @@ static void nxps32k3_realize(DeviceState *dev, Error **errp)
     }
     busdev = SYS_BUS_DEVICE(dev);
     sysbus_mmio_map(busdev, 0, CAN0_BA);
-    for(int i=0; i<3 ; i++){
-        armv7m = DEVICE(&s->armv7m[i]);
-        sysbus_connect_irq(busdev,0,qdev_get_gpio_in(armv7m,CAN0_IRQn));
-    }
+
+    armv7m = DEVICE(&s->armv7m[0]);
+    sysbus_connect_irq(busdev,0,qdev_get_gpio_in(armv7m,CAN0_IRQn));
+
     //CAN1
     dev = DEVICE(&(s->can1));
     object_property_set_link(OBJECT(&s->can1), "canbus",OBJECT(s->canbus), &error_fatal);
@@ -131,10 +130,9 @@ static void nxps32k3_realize(DeviceState *dev, Error **errp)
     }
     busdev = SYS_BUS_DEVICE(dev);
     sysbus_mmio_map(busdev, 0, CAN1_BA);
-    for(int i=0; i<3 ; i++){
-        armv7m = DEVICE(&s->armv7m[i]);
-        sysbus_connect_irq(busdev,0,qdev_get_gpio_in(armv7m,CAN1_IRQn));
-    }
+
+    armv7m = DEVICE(&s->armv7m[0]);
+    sysbus_connect_irq(busdev,0,qdev_get_gpio_in(armv7m,CAN1_IRQn));
 
 }
 
