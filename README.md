@@ -45,7 +45,7 @@ sudo make install
 
 where the second command is necessary only if you want to access Qemu from outside its directory as we are about to do.
 
-Then open another terminal in the directory where the code to run is present (for our demo it's the `NXP_Startup` folder), and simply run:
+Then open another terminal in the directory where the code to run is present (for our demo it's the `Demo` folder), and simply run:
 
 ```bash
 make all
