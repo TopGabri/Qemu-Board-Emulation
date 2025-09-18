@@ -29,7 +29,7 @@ The UART is a serial device used for point to point full duplex communication. I
 
 As we are not building the UART on hardware but we are just emulating the peripheral in software, we don't really care about how the single bits are transmitted. 
 Qemu provides a backend chardev configurable with the number of data and stop bits, type of parity and baudrate.
-What are interested in how the peripheral can receive or transmit characters and how the status bits change accordingly.
+We are interested in how the peripheral can receive or transmit characters and how the status bits change accordingly.
 
 ## Qemu custom device
 As we are building a custom Qemu device, we need to:
@@ -81,6 +81,30 @@ static void uart_reset(DeviceState *dev)
     /*Resets the device*/
 }
 
+static int uart_can_receive(void *opaque)
+{
+    /*Tells the backend how many chars the frontend is willing to receive*/
+}
+
+
+static void uart_receive(void *opaque, const uint8_t *buf, int size)
+{   
+   /*Called whenthe backend transmits a character to the frontend*/
+}
+
+static uint64_t uart_read(void *opaque, hwaddr addr,
+                                       unsigned int size)
+{
+   /*Called when a UART register is read*/
+}
+
+static void uart_write(void *opaque, hwaddr addr,
+                                  uint64_t val, unsigned int size)
+{
+    /*Called when a UART register is written*/
+}
+
+
 static void uart_realize(DeviceState *dev, Error **errp)
 {
     /*Instantiates the device*/
@@ -129,8 +153,6 @@ static void uart_register_types(void)
 
 type_init(uart_register_types)
 ```
-
-The just mentioned functions are the boilerplate of basically every Qemu device.
 
 
 ## Altera Nios II UART Peripheral
@@ -326,6 +348,7 @@ A timer was active as tx_shift_register is not ready.
     * `qemu_chr_fe_write_all` is called and the backend transmits the character in the serial port
 
 **NOTE_1**: "ready" register means that its content was already read and hence can be safely overwritten.
+
 **NOTE_2**: checks on "readiness" are performed using either status bits or internal variables. In particular:
 * rx_shift_register is ready when `s->can_receive = 1`
 * RX_DATA is ready when `RRDY = 1`
