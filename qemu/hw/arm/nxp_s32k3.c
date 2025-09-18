@@ -98,6 +98,7 @@ static void nxps32k3_realize(DeviceState *dev, Error **errp)
    	}
    	
     //PERIPHERALS
+    //UART
     dev = DEVICE(&(s->uart));
     qdev_prop_set_chr(dev, "chardev", serial_hd(0));    
     if (!sysbus_realize(SYS_BUS_DEVICE(&s->uart), errp)) {
@@ -110,6 +111,31 @@ static void nxps32k3_realize(DeviceState *dev, Error **errp)
         armv7m = DEVICE(&s->armv7m[i]);
         sysbus_connect_irq(busdev,0,qdev_get_gpio_in(armv7m,uart_irq));
     }
+    //CAN0
+    dev = DEVICE(&(s->can0));
+    object_property_set_link(OBJECT(&s->can0), "canbus",OBJECT(s->canbus), &error_fatal);
+    if (!sysbus_realize(SYS_BUS_DEVICE(&s->can0), errp)) {
+        return;
+    }
+    busdev = SYS_BUS_DEVICE(dev);
+    sysbus_mmio_map(busdev, 0, can0_addr);
+    for(int i=0; i<3 ; i++){
+        armv7m = DEVICE(&s->armv7m[i]);
+        sysbus_connect_irq(busdev,0,qdev_get_gpio_in(armv7m,can0_0_irq));
+    }
+    //CAN1
+    dev = DEVICE(&(s->can1));
+    object_property_set_link(OBJECT(&s->can1), "canbus",OBJECT(s->canbus), &error_fatal);
+    if (!sysbus_realize(SYS_BUS_DEVICE(&s->can1), errp)) {
+        return;
+    }
+    busdev = SYS_BUS_DEVICE(dev);
+    sysbus_mmio_map(busdev, 0, can1_addr);
+    for(int i=0; i<3 ; i++){
+        armv7m = DEVICE(&s->armv7m[i]);
+        sysbus_connect_irq(busdev,0,qdev_get_gpio_in(armv7m,can1_0_irq));
+    }
+
 }
 
 
@@ -134,6 +160,11 @@ static void nxps32k3s_class_init(Object *oc)
     //initialize peripherals
     object_initialize_child(oc, "uart", &nxps32k3->uart, TYPE_UART);
     
+    nxps32k3->canbus = CAN_BUS(object_new(TYPE_CAN_BUS));
+    object_property_add_child(OBJECT(nxps32k3), "canbus", OBJECT(nxps32k3->canbus));
+    object_initialize_child(oc, "can0", &nxps32k3->can0, TYPE_CAN);
+    object_initialize_child(oc, "can1", &nxps32k3->can1, TYPE_CAN);
+
     //clock
     nxps32k3->sysclk = qdev_init_clock_in(DEVICE(nxps32k3), "sysclk", NULL, NULL, 0);
     nxps32k3->refclk = qdev_init_clock_in(DEVICE(nxps32k3), "refclk", NULL, NULL, 0);

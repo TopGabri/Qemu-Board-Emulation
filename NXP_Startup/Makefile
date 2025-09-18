@@ -29,6 +29,7 @@ QEMU_FLAGS = # -s -S
 
 INCLUDE_DIRS = -I$(KERNEL_DIR)/include -I$(KERNEL_PORT_DIR) -I$(KERNEL_PORT_DIR)
 INCLUDE_DIRS += -I$(DEMO_PROJECT)
+INCLUDE_DIRS += -I$(DEMO_PROJECT)/include
 
 VPATH += $(KERNEL_DIR) $(KERNEL_PORT_DIR) $(KERNEL_DIR)/portable/MemMang
 VPATH += $(DEMO_PROJECT)
@@ -104,6 +105,7 @@ SOURCE_FILES += ./startup.c
 
 # Peripheral code
 SOURCE_FILES += ./uart.c
+SOURCE_FILES += ./can.c
 
 # Create list of object files with the same names of the sources
 OBJS = $(SOURCE_FILES:%.c=%.o)

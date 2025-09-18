@@ -2,8 +2,7 @@
 #define __PRINTF__
 
 #include "FreeRTOS.h"
-//#include "stm32f205xx.h"
-//#include "core_cm3.h"
+#include "ARMCM7.h"
 
 #define UART_ADDRESS                         ( 0x40328000UL )
 #define UART_RXDATA                          ( *( ( ( volatile uint32_t * ) ( UART_ADDRESS + 0UL ) ) ) )

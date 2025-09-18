@@ -10,6 +10,7 @@
 #include "qobject/qlist.h"
 #include "hw/char/uart.h"
 #include "hw/net/can.h"
+#include "net/can_emu.h"
 
 #define TYPE_NXPS32K3S_MCU "NXPS32K3S"
 
@@ -39,6 +40,21 @@ OBJECT_DECLARE_SIMPLE_TYPE(NXPS32K3McuState, NXPS32K3_MCU)
 
 static const uint32_t uart_addr=0x40328000;
 static const uint32_t uart_irq=141;
+//CAN0 address and IRQ
+static const uint32_t can0_addr=0x40304000;
+//which IRQ to use ??
+static const uint32_t can0_0_irq=109; 
+static const uint32_t can0_1_irq=110; 
+static const uint32_t can0_2_irq=111;
+static const uint32_t can0_3_irq=112;
+
+//CAN1 address and IRQ
+//which IRQ to use ??
+static const uint32_t can1_addr=0x40308000;
+static const uint32_t can1_0_irq=113; 
+static const uint32_t can1_1_irq=114; 
+static const uint32_t can1_2_irq=115;
+
 
 struct NXPS32K3McuState{
 	//Sysbus
@@ -66,6 +82,10 @@ struct NXPS32K3McuState{
     
     //peripheral
     UartState uart;
+    CanState can0;
+    CanState can1;
+    CanBusState *canbus;
+
 };
 
 #endif
