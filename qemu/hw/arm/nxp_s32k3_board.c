@@ -26,7 +26,7 @@ static void nxps32k3_board_init(MachineState *machine){
     dev = qdev_new(TYPE_NXPS32K3_MCU);
     object_property_add_child(OBJECT(machine), "mcu", OBJECT(dev));
     
-    printf ("setting up board...\n");
+    // printf ("setting up board...\n");
     
     //clock setup
     Clock *sysclk;
@@ -40,7 +40,7 @@ static void nxps32k3_board_init(MachineState *machine){
     //LOAD KERNEL HERE
     armv7m_load_kernel(NXPS32K3_MCU(dev)->armv7m[0].cpu, machine->kernel_filename, 0x00400000, PFLASH_SIZE);
                        
-    printf("Board setup complete\n");
+    // printf("Board setup complete\n");
 }
 
 static void nxps32k3_board_class_init(ObjectClass *oc,const void* data){

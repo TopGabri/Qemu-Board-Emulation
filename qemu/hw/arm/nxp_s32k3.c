@@ -26,7 +26,7 @@ typedef struct NXPS32K3McuClass NXPS32K3McuClass;
 
 static void nxps32k3_realize(DeviceState *dev, Error **errp)
 {    
-    printf("Realizing NXP S32K3 Micro Controller \n");
+    // printf("Realizing NXP S32K3 Micro Controller \n");
     
     NXPS32K3McuState *s = NXPS32K3_MCU(dev);
     DeviceState *armv7m;

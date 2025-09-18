@@ -222,7 +222,7 @@ As with UART, you must define the peripheral base address (`can0_addr`) and inte
 
 ## LPC17xx CAN Peripheral: description
 
-For the implementation of the peripheral, we chose the *NXP LPC17xx* CAN controller (see *Chapter 16* of the user manual at https://www.keil.com/dd/docs/datashts/philips/lpc17xx_um.pdf), and made a customized, simplified version of it:
+For the implementation of the peripheral, we chose the *NXP LPC17xx* CAN controller (see *Chapter 16* of the user manual at https://www.keil.com/dd/docs/datashts/philips/lpc17xx_um.pdf), because we had already used it in the Computer Architectures course. For this project, we made a customized, simplified version of it:
 
 - **TX buffer** (4 registers):
   - **TFI**: Transmit frame Info (`0x00`)
