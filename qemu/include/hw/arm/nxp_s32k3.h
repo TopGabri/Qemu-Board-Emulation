@@ -1,3 +1,12 @@
+/*
+
+    Emulation of the NXP S32K3X8EVB-Q289  © 2025 
+    by Claudio Pio Perricone, Gabriele Arcidiacono, Matteo Ruggeri, Stefano Galati 
+    is licensed under CC BY-NC 4.0. To view a copy of this license, 
+    visit https://creativecommons.org/licenses/by-nc/4.0/
+
+*/
+
 #ifndef HW_NXPS32K3_H
 #define HW_NXPS32K3_H
 
