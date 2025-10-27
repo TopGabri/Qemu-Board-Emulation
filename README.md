@@ -27,7 +27,7 @@ The project runs on Linux and can be imported from our git repository with the f
 git clone --recurse-submodules https://baltig.polito.it/eos2024/group4.git
 ```
 
-The option `--recurse-submodules` is necessary to dowload FreeRTOS.
+The option `--recurse-submodules` is necessary to download `FreeRTOS`.
 
 To run your code on the emulated board, first and foremost you have to compile Qemu. To do so, you have to move to the Qemu directory:
 
